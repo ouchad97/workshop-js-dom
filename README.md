@@ -48,10 +48,23 @@ Le [glossaire DOM](./glossaire.md) regroupe les méthodes et notions du workshop
 Chaque fiche est un fichier Markdown. Un challenge commence par `### Challenge N : Titre` (ou `### Étape N : Titre`) et peut contenir :
 
 - `<!-- starter ... -->` : le code de départ de l'éditeur ;
-- `<!-- check ... -->` : le test automatique. Il renvoie `true` si c'est réussi, sinon un message d'aide. Outils disponibles : `$`, `$$`, `text`, `css`, `logs`, `logged`, `errors`, `click`, `type`, `choose`, `submit`, `wait`, `rerun`, `doc`, `win` ;
+- `<!-- check ... -->` : le test automatique. Il renvoie `true` si c'est réussi, sinon un message d'aide. Outils disponibles : `$`, `$$`, `text`, `css`, `logs`, `logged`, `errors`, `click`, `type`, `choose`, `submit`, `fire`, `wait`, `rerun`, `doc`, `win`, `code` (le code de l'apprenant), `fetches` (nombre d'appels à fetch) ;
+- `<!-- hint ... -->` : un indice (plusieurs blocs possibles, affichés un par un) ;
 - `<solution> ... </solution>` : la solution guidée.
 
 La page de travail de chaque étape est dans `scenes/`, et la liste des étapes en haut de `app.js`.
+
+Un titre qui contient « Bonus » marque un challenge bonus : il n'est jamais verrouillé et n'est pas obligatoire pour débloquer l'étape suivante.
+
+## Verrou
+
+Un challenge s'ouvre quand les précédents sont réussis, une étape quand la précédente est terminée. Pour tout débloquer (formateur), tape dans la console du navigateur (F12) :
+
+```js
+localStorage.setItem("domws:unlock", "1")
+```
+
+Puis recharge la page. Pour remettre le verrou : `localStorage.removeItem("domws:unlock")`.
 
 ## Ressources recommandées
 

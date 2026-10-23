@@ -84,6 +84,14 @@ charger();
 
 Les lignes des produits dont le stock est **inférieur à 3** reçoivent la classe `alerte` (en rouge).
 
+<!-- hint
+Dans la boucle, teste `p.stock < 3`.
+-->
+
+<!-- hint
+Si c'est vrai : `tr.classList.add("alerte")`.
+-->
+
 <!-- check
 await wait(900);
 const alertes = $$("#corps tr.alerte").map(tr => text(tr.querySelector("td"))).sort();
@@ -94,6 +102,14 @@ return true;
 ### Étape 3 : Les statistiques
 
 Remplis les trois cartes : `#nb-produits` (nombre de produits), `#nb-rupture` (produits avec un stock de 0) et `#valeur-stock` (somme de `prix × stock`, en DH).
+
+<!-- hint
+Ruptures : `filter(p => p.stock === 0).length`.
+-->
+
+<!-- hint
+Valeur : `reduce((total, p) => total + p.prix * p.stock, 0)`.
+-->
 
 <!-- check
 await wait(900);
@@ -106,6 +122,14 @@ return true;
 ### Étape 4 : Filtrer par catégorie
 
 Après le chargement, remplis `#categorie` avec une option par catégorie présente dans les données, **sans doublon**. Quand on choisit une catégorie, le tableau **et** les statistiques ne concernent plus que cette catégorie.
+
+<!-- hint
+`new Set(produits.map(p => p.categorie))` garde chaque catégorie une seule fois.
+-->
+
+<!-- hint
+Calcule la liste filtrée dans `afficher()` et utilise-la pour le tableau ET les stats.
+-->
 
 <!-- check
 await wait(900);
@@ -123,6 +147,14 @@ return true;
 ### Étape 5 : Trier les colonnes
 
 Un clic sur un en-tête `th[data-tri]` trie le tableau selon cette colonne, en ordre **croissant**. Un deuxième clic sur le **même** en-tête inverse l'ordre. Le tri fonctionne aussi avec le filtre.
+
+<!-- hint
+Garde la colonne triée et le sens (`croissant`) dans des variables.
+-->
+
+<!-- hint
+Nombres : `a - b`. Textes : `a.localeCompare(b)`. Inverse le résultat si le sens est décroissant.
+-->
 
 <!-- check
 await wait(900);

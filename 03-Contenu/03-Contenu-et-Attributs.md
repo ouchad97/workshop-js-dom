@@ -66,6 +66,14 @@ nom.textContent = "Salma Idrissi";
 
 Remplace la bio par une phrase qui contient un mot **en gras** (une balise `<strong>`).
 
+<!-- hint
+`textContent` affiche les balises comme du texte : il faut une autre propriété.
+-->
+
+<!-- hint
+Avec `innerHTML`, la balise `<strong>` est interprétée.
+-->
+
 <!-- check
 if (!$("#bio strong")) return "La bio doit contenir une balise <strong> : utilise innerHTML.";
 if (text("#bio").includes("Bio à compléter")) return "Remplace tout le texte de la bio.";
@@ -75,6 +83,14 @@ return true;
 ### Challenge 3 : Changer la photo
 
 Change l'image de profil : sa source doit devenir `img/avatar-2.svg` et son texte alternatif `Ma photo`.
+
+<!-- hint
+Les attributs se modifient avec `setAttribute(nom, valeur)`.
+-->
+
+<!-- hint
+Il y a deux attributs à changer : `src` et `alt`.
+-->
 
 <!-- check
 const img = $("#avatar");
@@ -86,6 +102,14 @@ return true;
 ### Challenge 4 : Le lien du portfolio
 
 Le lien « Mon portfolio » doit pointer vers `https://github.com` et s'ouvrir dans un **nouvel onglet**.
+
+<!-- hint
+Le lien se trouve avec `#site` ; sa destination est l'attribut `href`.
+-->
+
+<!-- hint
+Pour un nouvel onglet : l'attribut `target` avec la valeur `_blank`.
+-->
 
 <!-- check
 const lien = $("#site");
@@ -99,6 +123,14 @@ return true;
 1. Affiche dans la console la valeur actuelle de `data-statut` du badge `#statut`.
 2. Passe ensuite ce statut à `en-ligne` et change le texte du badge en « En ligne » (le badge devient vert).
 
+<!-- hint
+`data-statut` se lit et s'écrit avec `dataset.statut`.
+-->
+
+<!-- hint
+Fais le `console.log` AVANT de changer la valeur.
+-->
+
 <!-- check
 if (!logged("hors-ligne")) return "Affiche d'abord la valeur actuelle de data-statut dans la console.";
 const statut = $("#statut");
@@ -107,3 +139,21 @@ if (text(statut) !== "En ligne") return "Le texte du badge doit être « En lign
 return true;
 -->
 
+### Challenge 6 : Bonus · Des infobulles
+
+Ajoute à `#nom`, `#metier` et `#bio` un attribut `title` qui contient leur propre texte (l'infobulle qui apparaît au survol). Utilise une boucle.
+
+<!-- hint
+Mets les trois sélecteurs dans un tableau et fais une boucle dessus.
+-->
+
+<!-- hint
+Dans la boucle : `element.title = element.textContent`.
+-->
+
+<!-- check
+const manque = ["#nom", "#metier", "#bio"].find(sel => $(sel).getAttribute("title") !== $(sel).textContent);
+if (manque) return `L'attribut title de ${manque} doit contenir exactement son texte.`;
+if (!/forEach|for\s*\(|while\s*\(/.test(code())) return "Utilise une boucle (forEach, for…) au lieu de répéter le code.";
+return true;
+-->

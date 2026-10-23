@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -20,6 +21,7 @@
       <div class="topbar-meta">
         <span class="status-dot"></span>
         <span id="global-progress">0 challenge réussi</span>
+        <button class="work-btn" id="work-button" type="button">💾 <span>Mon travail</span></button>
         <button class="theme-btn" id="theme-toggle" type="button" aria-label="Basculer le thème" title="Basculer le thème">🌙</button>
         <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Ouvrir le menu">☰</button>
       </div>
@@ -68,6 +70,7 @@
                 <li>Clique sur <strong>Coder ici</strong> sous un challenge et écris ton JavaScript dans l'éditeur.</li>
                 <li><strong>Exécuter</strong> (ou <code>Ctrl + Entrée</code>) lance ton code sur une page neuve. La console affiche tes <code>console.log</code> et tes erreurs.</li>
                 <li><strong>Vérifier</strong> teste ton code automatiquement. Ton code et ta progression restent enregistrés dans ce navigateur.</li>
+                <li>Le bouton <strong>💾 Mon travail</strong> exporte ton travail dans un fichier (pour le garder, changer d'ordinateur ou l'envoyer à ton formateur) et copie un résumé de ta progression.</li>
               </ol>
               <p>Pour lancer la plateforme sur ton ordinateur, ouvre un terminal dans le dossier du projet :</p>
               <pre><code>npx serve .</code></pre>
@@ -180,6 +183,33 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="work-modal" hidden>
+    <div class="modal-content">
+      <button class="modal-close" id="close-work" type="button" aria-label="Fermer">×</button>
+      <div class="modal-header">
+        <span class="eyebrow">Sauvegarde</span>
+        <h2>Mon travail</h2>
+      </div>
+      <div class="modal-body">
+        <label class="work-name">Ton prénom et ton nom
+          <input id="work-name" type="text" placeholder="Ex : Salma Idrissi" autocomplete="name">
+        </label>
+        <div class="work-summary" id="work-summary"></div>
+        <div class="work-actions">
+          <button class="sb-btn sb-run" id="work-export" type="button">⬇ Exporter mon travail</button>
+          <button class="sb-btn sb-verify" id="work-copy" type="button">📋 Copier le résumé</button>
+          <button class="sb-btn sb-ghost" id="work-import" type="button">⬆ Importer un fichier</button>
+          <input id="work-file" type="file" accept=".json,application/json" hidden>
+        </div>
+        <p class="work-note" id="work-note">Ton travail est enregistré dans ce navigateur uniquement. Exporte-le pour le garder, le retrouver sur un autre ordinateur ou l'envoyer à ton formateur.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

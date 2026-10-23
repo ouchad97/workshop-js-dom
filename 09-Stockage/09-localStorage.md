@@ -65,6 +65,14 @@ document.querySelector("#visites").textContent = visites;
 
 Le bouton `#mode` ajoute ou retire la classe `sombre` sur le `body`. Le choix est enregistré sous la clé `mode` (`"sombre"` ou `"clair"`) et appliqué au chargement.
 
+<!-- hint
+Au chargement : si `localStorage.getItem("mode")` vaut `"sombre"`, ajoute la classe au `body`.
+-->
+
+<!-- hint
+Au clic : `toggle` la classe, puis enregistre `"sombre"` ou `"clair"` selon `classList.contains("sombre")`.
+-->
+
 <!-- check
 if ($("body").classList.contains("sombre")) return "Au premier chargement (clé effacée), la page doit être claire.";
 await click("#mode");
@@ -80,6 +88,14 @@ return true;
 ### Challenge 3 : Enregistrer les notes
 
 Quand on envoie le formulaire `#form-note`, la note saisie est ajoutée dans `#notes` (un `li`) **et** dans un tableau enregistré en JSON sous la clé `notes`. Le champ est vidé après l'ajout. Une note vide n'est pas ajoutée.
+
+<!-- hint
+Garde un tableau `notes` et ajoute chaque nouvelle note avec `push`.
+-->
+
+<!-- hint
+`localStorage` ne garde que du texte : `JSON.stringify(notes)` avant `setItem`.
+-->
 
 <!-- check
 await type("#note", "Acheter du pain");
@@ -98,6 +114,14 @@ return true;
 ### Challenge 4 : Retrouver les notes
 
 Reprends le challenge 3. Au chargement, les notes enregistrées sont relues et affichées. Les nouvelles notes s'ajoutent aux anciennes.
+
+<!-- hint
+Au chargement : `JSON.parse(localStorage.getItem("notes")) || []`.
+-->
+
+<!-- hint
+Affiche chaque note de ce tableau avec la même fonction que pour une nouvelle note.
+-->
 
 <!-- check
 await type("#note", "Première");
@@ -119,6 +143,14 @@ return true;
 
 Reprends le challenge 4. Le bouton `#vider` supprime toutes les notes : de la page **et** du localStorage.
 
+<!-- hint
+Il faut vider trois choses : le tableau, le localStorage et la liste affichée.
+-->
+
+<!-- hint
+`localStorage.removeItem("notes")` et `liste.innerHTML = ""`.
+-->
+
 <!-- check
 await type("#note", "À effacer");
 await submit("#form-note");
@@ -134,3 +166,29 @@ if ($$("#notes li").length !== 1) return "Après #vider, on doit pouvoir ajouter
 return true;
 -->
 
+### Challenge 6 : Bonus · Supprimer une note
+
+Reprends le challenge 5. Chaque note a un bouton `✕` (classe `supprimer`) qui la retire de la page **et** du localStorage.
+
+<!-- hint
+Crée le bouton ✕ dans chaque `li`, avec un écouteur qui sait quelle note supprimer.
+-->
+
+<!-- hint
+Retire la note du tableau (`filter` ou `splice`), enregistre, puis réaffiche.
+-->
+
+<!-- check
+await type("#note", "Un");
+await submit("#form-note");
+await type("#note", "Deux");
+await submit("#form-note");
+const bouton = $("#notes li .supprimer");
+if (!bouton) return "Chaque li de #notes doit contenir un bouton avec la classe supprimer.";
+await click(bouton);
+const textes = () => $$("#notes li").map(li => li.firstChild.textContent.trim());
+if ($$("#notes li").length !== 1) return "Après un clic sur ✕, la note doit disparaître de la page.";
+await rerun();
+if ($$("#notes li").length !== 1 || !text($("#notes li")).includes("Deux")) return "Après un rechargement, seule la note « Deux » doit revenir : mets à jour le localStorage.";
+return true;
+-->

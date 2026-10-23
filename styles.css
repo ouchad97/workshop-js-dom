@@ -236,6 +236,58 @@ h1 em { color: var(--orange); font-style: normal; }
 .log-error { color: #ff9b85; }
 .log-line { flex-shrink: 0; opacity: .7; }
 
+/* ── Code editor (CodeMirror) ── */
+.sb-editor .CodeMirror { height: 260px; color: var(--code-block-text); background: var(--code-block-bg); font-family: "DM Mono", monospace; font-size: 12px; line-height: 1.6; }
+.sb-editor .CodeMirror-gutters { border-right: 1px solid rgba(255,255,255,.06); background: var(--code-block-bg); }
+.sb-editor .CodeMirror-linenumber { color: #5f7d75; }
+.sb-editor .CodeMirror-cursor { border-left-color: #f8d77b; }
+.sb-editor .CodeMirror-selected, .sb-editor .CodeMirror-focused .CodeMirror-selected { background: rgba(200,238,224,.18); }
+.sb-editor .CodeMirror-activeline-background { background: rgba(255,255,255,.04); }
+.sb-editor .CodeMirror-matchingbracket { color: #f8d77b !important; text-decoration: underline; }
+.sb-editor .cm-keyword { color: #f28f74; }
+.sb-editor .cm-def { color: #f8d77b; }
+.sb-editor .cm-variable, .sb-editor .cm-variable-2 { color: #d9f2e7; }
+.sb-editor .cm-variable-3, .sb-editor .cm-type { color: #9fd8c4; }
+.sb-editor .cm-property { color: #9fd8c4; }
+.sb-editor .cm-string, .sb-editor .cm-string-2 { color: #b5e08d; }
+.sb-editor .cm-number, .sb-editor .cm-atom { color: #c6a7f7; }
+.sb-editor .cm-comment { color: #6e8d84; font-style: italic; }
+.sb-editor .cm-operator { color: #e7ccb5; }
+
+/* ── My work ── */
+.work-btn { padding: 7px 12px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: var(--white); font-size: 12px; font-weight: 700; transition: .2s; }
+.work-btn:hover { border-color: var(--green); }
+.work-name { display: grid; gap: 6px; color: var(--ink); font-size: 13px; font-weight: 700; }
+.work-name input { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--white); font: inherit; font-weight: 500; }
+.work-summary { display: grid; gap: 6px; margin: 20px 0; }
+.work-row { position: relative; display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 8px; padding: 9px 12px; overflow: hidden; border-radius: 8px; background: var(--code-bg); font-size: 13px; }
+.work-row span { color: var(--muted); font-family: "DM Mono", monospace; font-size: 11px; }
+.work-row em { color: var(--muted); font-family: "DM Mono", monospace; font-size: 11px; font-style: normal; }
+.work-row i { position: absolute; left: 0; bottom: 0; width: calc(var(--ratio) * 100%); height: 3px; background: var(--green); }
+.work-row.complete em { color: var(--green); font-weight: 700; }
+.work-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.work-note { margin: 16px 0 0; white-space: pre-line; }
+
+/* ── Bonus challenges ── */
+.challenge.bonus { border-style: dashed; border-color: var(--orange); }
+.challenge.bonus .challenge-head h3::before { content: "★ "; color: var(--orange); }
+
+/* ── Locks ── */
+.lesson-link.locked { opacity: .55; }
+.challenge.locked { opacity: .55; }
+.challenge.locked .challenge-status { color: var(--muted); }
+.code-btn:disabled { cursor: not-allowed; background: var(--muted); }
+.locked-step { max-width: 520px; margin: 30px 0; padding: 34px; text-align: center; border: 1px dashed var(--line); border-radius: 14px; background: var(--paper); }
+.locked-step h2 { margin: 10px 0 8px; }
+.locked-icon { font-size: 34px; }
+
+/* ── Hints ── */
+.hint-btn { padding: 10px 16px; border: 1px solid var(--yellow); border-radius: 6px; color: var(--ink); background: rgba(248,215,123,.18); font-family: "DM Mono", monospace; font-size: 11px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; transition: .2s; }
+.hint-btn:hover { background: var(--yellow); }
+.hint-btn[hidden] { display: none; }
+.hints:empty { display: none; }
+.reader-body .hint { margin: 10px 0 0; padding: 10px 14px; border-left: 3px solid var(--yellow); border-radius: 0 6px 6px 0; background: rgba(248,215,123,.14); }
+
 /* ── Animations ── */
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes blink { 50% { opacity: 0; } }
@@ -268,5 +320,6 @@ h1 em { color: var(--orange); font-style: normal; }
   .challenge { padding: 10px 18px 16px; }
   .reader-body pre { padding: 16px; }
   .sb-hint { display: none; }
+  .work-btn span { display: none; }
 }
 

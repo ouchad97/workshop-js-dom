@@ -99,6 +99,14 @@ btnCouleur.addEventListener("click", () => {
 
 Crée un bouton `btn-inverser` qui inverse le sens de l'escalier au clic (de haut en bas → de bas en haut). Un deuxième clic le remet dans le sens d'origine.
 
+<!-- hint
+L'escalier `#staircase` est un conteneur flex.
+-->
+
+<!-- hint
+`flex-direction: row-reverse` inverse l'ordre ; teste la valeur actuelle pour choisir le sens.
+-->
+
 <!-- check
 if (!$("#btn-inverser")) return "Aucun bouton #btn-inverser dans la page.";
 const pos = () => { const s = $$(".step"); return s[0].getBoundingClientRect().left - s[s.length - 1].getBoundingClientRect().left; };
@@ -116,6 +124,14 @@ return true;
 
 Crée un bouton `btn-plus` (texte « + ») qui ajoute une nouvelle marche à la fin de l'escalier à **chaque** clic. La nouvelle marche a la classe `step` et affiche son numéro.
 
+<!-- hint
+À chaque clic, crée une `div` avec la classe `step`.
+-->
+
+<!-- hint
+Le numéro de la nouvelle marche : nombre de marches actuel + 1 (recompte-les dans l'écouteur).
+-->
+
 <!-- check
 if (!$("#btn-plus")) return "Aucun bouton #btn-plus dans la page.";
 await click("#btn-plus");
@@ -129,6 +145,14 @@ return true;
 ### Challenge 4 : Retirer une marche
 
 Crée un bouton `btn-moins` (texte « − ») qui supprime la **dernière** marche à chaque clic.
+
+<!-- hint
+La dernière marche est `escalier.lastElementChild`.
+-->
+
+<!-- hint
+Quand il n'y a plus de marche, `lastElementChild` vaut `null` : vérifie avant `remove()`.
+-->
 
 <!-- check
 if (!$("#btn-moins")) return "Aucun bouton #btn-moins dans la page.";
@@ -149,6 +173,14 @@ return true;
 
 Crée un champ de saisie avec l'id `numero` et un bouton `btn-valider`. Quand on tape un numéro de marche puis qu'on clique sur le bouton, **cette** marche change de couleur. Si la marche n'existe pas, affiche un message dans la console.
 
+<!-- hint
+Crée un `input` (id `numero`) et un bouton (id `btn-valider`), puis lis `champ.value` au clic.
+-->
+
+<!-- hint
+La marche numéro N est à l'index `N - 1`. Si elle n'existe pas, affiche un message au lieu de la modifier.
+-->
+
 <!-- check
 if (!$("#numero")) return "Aucun champ #numero dans la page : crée un input.";
 if (!$("#btn-valider")) return "Aucun bouton #btn-valider dans la page.";
@@ -165,3 +197,26 @@ if (errors().length) return "Avec un numéro qui n'existe pas (42), ton code pla
 return true;
 -->
 
+### Challenge 6 : Bonus · Au clavier
+
+Sans bouton : la flèche **droite** du clavier (`ArrowRight`) ajoute une marche, la flèche **gauche** (`ArrowLeft`) retire la dernière. Écoute l'événement `keydown` sur `document`.
+
+<!-- hint
+Écoute `keydown` sur `document` et regarde `event.key`.
+-->
+
+<!-- hint
+`"ArrowRight"` : même code que le bouton +. `"ArrowLeft"` : même code que le bouton −.
+-->
+
+<!-- check
+await fire(doc(), "keydown", { key: "ArrowRight" });
+if ($$("#staircase .step").length !== 6) return "Après ArrowRight, l'escalier doit avoir 6 marches.";
+if (text($$("#staircase .step")[5]) !== "6") return "La nouvelle marche doit afficher son numéro (6).";
+await fire(doc(), "keydown", { key: "ArrowLeft" });
+await fire(doc(), "keydown", { key: "ArrowLeft" });
+if ($$("#staircase .step").length !== 4) return "Après 2 × ArrowLeft, il doit rester 4 marches.";
+await fire(doc(), "keydown", { key: "a" });
+if ($$("#staircase .step").length !== 4) return "Les autres touches ne doivent rien changer : teste event.key.";
+return true;
+-->

@@ -90,6 +90,14 @@ form.addEventListener("submit", event => {
 
 Avec un seul écouteur sur `#liste` : un clic sur une tâche bascule la classe `fait`, un clic sur ✕ la supprime.
 
+<!-- hint
+Un seul écouteur sur `#liste` ; retrouve la tâche avec `closest(".tache")`.
+-->
+
+<!-- hint
+Garde l'`id` de la tâche dans `li.dataset.id` pour la retrouver dans le tableau `todos`.
+-->
+
 <!-- check
 await type("#saisie", "Tâche A");
 await submit("#form");
@@ -110,6 +118,14 @@ return true;
 
 `#compteur` affiche le nombre de tâches **non faites**, par exemple `2 tâche(s) restante(s)`, et se met à jour après chaque action.
 
+<!-- hint
+`todos.filter(t => !t.fait).length` compte les tâches restantes.
+-->
+
+<!-- hint
+Mets ce calcul à la fin de `afficher()` : il sera toujours à jour.
+-->
+
 <!-- check
 const nombre = () => (text("#compteur").match(/\d+/) || [])[0];
 await type("#saisie", "Tâche A");
@@ -127,6 +143,14 @@ return true;
 ### Étape 4 : Les filtres
 
 Les boutons `[data-filtre]` n'affichent que les tâches `toutes`, `actives` (non faites) ou `faites`. Le bouton du filtre choisi a la classe `actif`. Le compteur compte toujours **toutes** les tâches non faites.
+
+<!-- hint
+Garde le filtre choisi dans une variable, mise à jour au clic sur un bouton `[data-filtre]`.
+-->
+
+<!-- hint
+Dans `afficher()`, boucle sur une liste filtrée ; le compteur, lui, compte toujours sur `todos`.
+-->
 
 <!-- check
 for (const t of ["Un", "Deux", "Trois"]) { await type("#saisie", t); await submit("#form"); }
@@ -146,6 +170,14 @@ return true;
 ### Étape 5 : Sauvegarder
 
 Les tâches sont enregistrées en JSON sous la clé `todos` après chaque action, et relues au chargement (avec leur état coché).
+
+<!-- hint
+Écris une fonction `sauvegarder()` avec `JSON.stringify(todos)` et appelle-la après chaque changement.
+-->
+
+<!-- hint
+Au démarrage : `let todos = JSON.parse(localStorage.getItem("todos")) || []`.
+-->
 
 <!-- check
 await type("#saisie", "Garder");

@@ -69,6 +69,14 @@ liste.append(li);
 
 Ajoute « Café » au **début** de la liste, avec la classe `article`.
 
+<!-- hint
+Même méthode qu'au challenge 1 : créer, remplir, placer.
+-->
+
+<!-- hint
+Pour placer au début, utilise `prepend` au lieu de `append`.
+-->
+
 <!-- check
 const items = $$("#liste li");
 if (text(items[0]) !== "Café") return "Le premier article doit être « Café » : utilise prepend.";
@@ -87,17 +95,34 @@ const aAjouter = ["Riz", "Tomates", "Huile"];
 // Ton code ici
 -->
 
+<!-- hint
+Fais une boucle `forEach` sur le tableau `aAjouter`.
+-->
+
+<!-- hint
+À chaque tour : `createElement`, `textContent`, `classList.add`, puis `append`.
+-->
+
 <!-- check
 const textes = $$("#liste li").map(li => text(li));
 if (textes.length !== 6) return `La liste doit contenir 6 articles (elle en a ${textes.length}).`;
 if (textes.slice(3).join(",") !== "Riz,Tomates,Huile") return "Les 3 derniers articles doivent être Riz, Tomates, Huile, dans cet ordre.";
 if ($$("#liste li").some(li => !li.classList.contains("article"))) return "Chaque nouveau li doit avoir la classe article.";
+if (!/forEach|for\s*\(|while\s*\(/.test(code())) return "Utilise une boucle (forEach, for…) au lieu de répéter le code.";
 return true;
 -->
 
 ### Challenge 4 : Supprimer le lait
 
 Retire « Lait » de la liste.
+
+<!-- hint
+« Lait » est le deuxième `li` de la liste.
+-->
+
+<!-- hint
+Une fois l'élément sélectionné, `remove()` le retire de la page.
+-->
 
 <!-- check
 const textes = $$("#liste li").map(li => text(li));
@@ -110,6 +135,14 @@ return true;
 
 Duplique la carte produit « Pomme ». Dans la copie, le nom devient « Banane » et le prix « 1 DH ». La copie doit apparaître après la carte d'origine.
 
+<!-- hint
+`cloneNode(true)` copie l'élément avec tout son contenu.
+-->
+
+<!-- hint
+Cherche dans la copie avec `copie.querySelector("h3")`, puis ajoute la copie dans `#cartes`.
+-->
+
 <!-- check
 const cartes = $$(".carte-produit");
 if (cartes.length !== 2) return `Il doit y avoir 2 cartes produit (il y en a ${cartes.length}).`;
@@ -119,3 +152,23 @@ if (text(cartes[1].querySelector(".prix")) !== "1 DH") return "Le prix de la cop
 return true;
 -->
 
+### Challenge 6 : Bonus · Trier la liste
+
+Range la liste de courses par ordre alphabétique **sans créer de nouveaux éléments** : déplace les `li` existants. Astuce : `append` d'un élément déjà dans la page le **déplace**.
+
+<!-- hint
+Transforme les enfants en tableau avec `[...liste.children]`, puis trie-le avec `sort`.
+-->
+
+<!-- hint
+Compare deux textes avec `a.textContent.localeCompare(b.textContent)`, puis `append` chaque li dans l'ordre.
+-->
+
+<!-- check
+const items = $$("#liste li");
+const textes = items.map(li => text(li));
+const attendus = ["Pain", "Lait", "Œufs"].sort((a, b) => a.localeCompare(b, "fr"));
+if (textes.join(",") !== attendus.join(",")) return `La liste doit être dans l'ordre ${attendus.join(", ")} (elle est dans l'ordre ${textes.join(", ")}).`;
+if (/createElement|innerHTML/.test(code())) return "Ne crée pas de nouveaux éléments : déplace les li existants avec append.";
+return true;
+-->

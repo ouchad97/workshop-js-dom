@@ -63,6 +63,14 @@ console.log(titre.textContent);
 
 Affiche dans la console le **nombre** de livres de la liste (les éléments qui ont la classe `livre`).
 
+<!-- hint
+`querySelectorAll` retourne tous les éléments qui correspondent au sélecteur.
+-->
+
+<!-- hint
+Une NodeList a une propriété `length`, comme un tableau.
+-->
+
 <!-- check
 if (!logs().some(line => /(^|[\s:=])4$/.test(line.trim()))) return "La console doit afficher le nombre 4 : utilise querySelectorAll puis length.";
 return true;
@@ -71,6 +79,14 @@ return true;
 ### Challenge 3 : Le troisième livre
 
 Affiche dans la console le texte du **troisième** livre de la liste.
+
+<!-- hint
+Récupère tous les livres, puis prends le bon index.
+-->
+
+<!-- hint
+Le premier élément est à l'index `0`, donc le troisième est à l'index `2`.
+-->
 
 <!-- check
 if (!logged("L'Étranger")) return "La console doit afficher « L'Étranger ». Attention : le premier élément est à l'index 0.";
@@ -81,6 +97,14 @@ return true;
 
 Dans le menu, un seul lien a la classe `actif`. Affiche son texte dans la console.
 
+<!-- hint
+Un sélecteur peut combiner une balise et une classe : `a.actif`.
+-->
+
+<!-- hint
+`querySelector` suffit : il n'y a qu'un seul lien actif.
+-->
+
 <!-- check
 if (!logs().some(line => line.trim() === "Contact" || line.includes("Contact"))) return "La console doit afficher le texte du lien qui a la classe actif.";
 return true;
@@ -90,10 +114,38 @@ return true;
 
 Affiche dans la console le texte de **chaque** livre, un par ligne, avec une boucle.
 
+<!-- hint
+Commence par sélectionner tous les livres avec `querySelectorAll`.
+-->
+
+<!-- hint
+Utilise `forEach` sur la NodeList, avec un `console.log` du `textContent` à chaque tour.
+-->
+
 <!-- check
 const titres = ["Le Petit Prince", "Astérix le Gaulois", "L'Étranger", "Une brève histoire du temps"];
 const manque = titres.find(t => !logs().some(line => line.trim() === t));
 if (manque) return `Il manque « ${manque} » dans la console (un console.log par livre).`;
+if (!/forEach|for\s*\(|while\s*\(/.test(code())) return "Utilise une boucle (forEach, for…) au lieu de répéter le code.";
 return true;
 -->
 
+### Challenge 6 : Bonus · Les genres
+
+Pour chaque livre, affiche dans la console son titre et son genre (l'attribut `data-genre`), sous la forme `Le Petit Prince : roman`.
+
+<!-- hint
+L'attribut `data-genre` se lit avec `element.dataset.genre`.
+-->
+
+<!-- hint
+Dans ta boucle, construis le texte avec un template literal : `${titre} : ${genre}`.
+-->
+
+<!-- check
+const attendus = ["Le Petit Prince : roman", "Astérix le Gaulois : bd", "L'Étranger : roman", "Une brève histoire du temps : science"];
+const manque = attendus.find(t => !logs().some(line => line.trim() === t));
+if (manque) return `Il manque « ${manque} » dans la console.`;
+if (!/forEach|for\s*\(|while\s*\(/.test(code())) return "Utilise une boucle (forEach, for…) au lieu de répéter le code.";
+return true;
+-->

@@ -87,6 +87,14 @@ charger();
 
 Affiche chaque membre dans `#annuaire` : un `li` par membre, sous la forme `Salma Idrissi — Safi`.
 
+<!-- hint
+Après `await reponse.json()`, tu as un tableau : fais une boucle dessus.
+-->
+
+<!-- hint
+Pour chaque membre : un `li` avec `${membre.nom} — ${membre.ville}`.
+-->
+
 <!-- check
 await wait(900);
 const items = $$("#annuaire li");
@@ -99,6 +107,14 @@ return true;
 
 Reprends le challenge 2. Pendant le chargement, le paragraphe `#chargement` est **visible** (il a l'attribut `hidden` au départ). Quand les membres sont affichés, il est à nouveau caché.
 
+<!-- hint
+Tout le code avant le premier `await` s'exécute tout de suite.
+-->
+
+<!-- hint
+`chargement.hidden = false` avant le `fetch`, `chargement.hidden = true` après l'affichage.
+-->
+
 <!-- check
 if ($("#chargement").hidden) return "Juste après le lancement, pendant que fetch attend, #chargement doit être visible : passe hidden à false avant le fetch.";
 await wait(900);
@@ -110,6 +126,14 @@ return true;
 ### Challenge 4 : Gérer une erreur
 
 Écris une fonction `charger(url)` qui charge et affiche les membres de `url`. Si la réponse n'est pas correcte (`reponse.ok` faux) ou si la requête échoue, `#erreur` affiche `Impossible de charger les données` et `#chargement` est caché. Termine par l'appel `charger("data/membres.json")`.
+
+<!-- hint
+Une erreur 404 ne va pas toute seule dans le `catch` : teste `reponse.ok` et fais `throw new Error(...)`.
+-->
+
+<!-- hint
+`finally` s'exécute dans tous les cas : pratique pour cacher le chargement.
+-->
 
 <!-- check
 await wait(900);
@@ -126,6 +150,14 @@ return true;
 
 Charge les membres **une seule fois** et garde-les dans une variable. Pendant la saisie dans `#filtre`, n'affiche que les membres dont la ville commence par le texte tapé (sans tenir compte des majuscules). `#total` affiche le nombre de membres affichés, par exemple `3 membre(s)`.
 
+<!-- hint
+Déclare `let membres = []` en dehors de la fonction et remplis-le après le `fetch`.
+-->
+
+<!-- hint
+Dans l'écouteur `input`, filtre `membres` avec `ville.toLowerCase().startsWith(texte)`, sans refaire de `fetch`.
+-->
+
 <!-- check
 await wait(900);
 if ($$("#annuaire li").length !== 10) return "Au départ, les 10 membres doivent être affichés.";
@@ -136,6 +168,29 @@ if (items.length !== 3 || items.some(li => !text(li).includes("Safi"))) return `
 if (!text("#total").includes("3")) return "#total doit afficher 3 avec le filtre « safi ».";
 await type("#filtre", "");
 if ($$("#annuaire li").length !== 10) return "Quand le filtre est vide, les 10 membres doivent revenir.";
+if (fetches() !== 1) return `Les données doivent être chargées une seule fois (fetch a été appelé ${fetches()} fois) : filtre le tableau déjà chargé.`;
 return true;
 -->
 
+### Challenge 6 : Bonus · Les formateurs
+
+Dans l'annuaire, les membres dont le rôle est `formateur` ou `formatrice` ont la classe `formateur` (ils s'affichent en gras). Affiche aussi leur rôle : `Nour El Fassi — Marrakech (formatrice)`.
+
+<!-- hint
+`m.role.startsWith("format")` est vrai pour formateur et formatrice.
+-->
+
+<!-- hint
+Ajoute la classe et le rôle seulement dans ce cas.
+-->
+
+<!-- check
+await wait(900);
+const items = $$("#annuaire li");
+if (items.length !== 10) return "Les 10 membres doivent être affichés.";
+const formateurs = items.filter(li => li.classList.contains("formateur")).map(li => text(li));
+if (formateurs.length !== 2) return `2 membres sont formateur ou formatrice : ils doivent avoir la classe formateur (tu en as ${formateurs.length}).`;
+if (!formateurs.some(t => t.includes("Nour El Fassi") && t.includes("(formatrice)"))) return "Affiche le rôle entre parenthèses : « Nour El Fassi — Marrakech (formatrice) ».";
+if (items.some(li => !li.classList.contains("formateur") && /\(format/.test(text(li)))) return "Seuls les formateurs ont la classe formateur.";
+return true;
+-->

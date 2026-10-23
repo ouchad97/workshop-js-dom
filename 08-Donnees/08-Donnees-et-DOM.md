@@ -95,6 +95,14 @@ afficher(produits);
 
 Reprends le challenge 1. Les cartes des produits dont le `stock` vaut `0` reçoivent en plus la classe `rupture`.
 
+<!-- hint
+Dans la boucle d'affichage, teste `produit.stock === 0`.
+-->
+
+<!-- hint
+Si c'est vrai : `carte.classList.add("rupture")`.
+-->
+
 <!-- check
 const cartes = $$("#grille .carte");
 if (cartes.length !== 8) return "#grille doit contenir les 8 cartes du challenge 1.";
@@ -107,18 +115,35 @@ return true;
 
 Quand on choisit une catégorie dans `#categorie`, seules les cartes de cette catégorie sont affichées. L'option `tous` réaffiche tout.
 
+<!-- hint
+Écoute l'événement `change` sur `#categorie`.
+-->
+
+<!-- hint
+`produits.filter(p => p.categorie === valeur)`, puis appelle `afficher` avec le résultat (sauf pour « tous »).
+-->
+
 <!-- check
 await choose("#categorie", "audio");
 const noms = $$("#grille .carte h3").map(h => text(h)).sort();
 if (noms.join(",") !== "Casque audio,Enceinte Bluetooth,Micro USB") return `Avec « audio », il faut 3 cartes : Casque audio, Enceinte Bluetooth, Micro USB (il y en a ${noms.length}).`;
 await choose("#categorie", "tous");
 if ($$("#grille .carte").length !== 8) return "Avec « tous », les 8 produits doivent revenir.";
+if (!/\.filter\(/.test(code())) return "Utilise la méthode filter pour garder les produits de la catégorie.";
 return true;
 -->
 
 ### Challenge 4 : Rechercher
 
 Pendant la saisie dans `#recherche`, n'affiche que les produits dont le nom **contient** le texte tapé, sans tenir compte des majuscules.
+
+<!-- hint
+Écoute l'événement `input` sur `#recherche`.
+-->
+
+<!-- hint
+Mets tout en minuscules avant de comparer : `p.nom.toLowerCase().includes(texte.toLowerCase())`.
+-->
 
 <!-- check
 await type("#recherche", "SOURIS");
@@ -129,6 +154,7 @@ noms = $$("#grille .carte h3").map(h => text(h)).sort();
 if (noms.join(",") !== "Casque audio,Clavier mécanique") return "En tapant « ca », il doit rester Casque audio et Clavier mécanique.";
 await type("#recherche", "");
 if ($$("#grille .carte").length !== 8) return "Quand la recherche est vide, les 8 produits doivent revenir.";
+if (!/\.filter\(/.test(code())) return "Utilise la méthode filter pour garder les produits qui correspondent.";
 return true;
 -->
 
@@ -136,17 +162,34 @@ return true;
 
 Le bouton `#trier` affiche les produits du **moins cher au plus cher**.
 
+<!-- hint
+`sort((a, b) => a.prix - b.prix)` trie du moins cher au plus cher.
+-->
+
+<!-- hint
+Trie une copie (`[...produits]`), puis appelle `afficher`.
+-->
+
 <!-- check
 await click("#trier");
 const prix = $$("#grille .carte .prix").map(p => parseInt(text(p)));
 if (prix.length !== 8) return "Après le tri, les 8 produits doivent être affichés.";
 if (prix.some((p, i) => i > 0 && p < prix[i - 1])) return `Les prix ne sont pas dans l'ordre croissant : ${prix.join(", ")}.`;
+if (!/\.sort\(/.test(code())) return "Utilise la méthode sort pour trier le tableau.";
 return true;
 -->
 
 ### Challenge 6 : Les statistiques
 
 `#stats` affiche le nombre de produits affichés et leur prix moyen arrondi, par exemple `8 produits · prix moyen : 536 DH`. Les statistiques se mettent à jour avec le filtre par catégorie (challenge 3).
+
+<!-- hint
+La somme des prix : `liste.reduce((somme, p) => somme + p.prix, 0)`.
+-->
+
+<!-- hint
+Calcule les stats DANS `afficher(liste)` : elles suivront toujours la liste affichée.
+-->
 
 <!-- check
 const chiffres = () => (text("#stats").match(/\d+/g) || []);
@@ -156,3 +199,29 @@ if (!chiffres().includes("3") || !chiffres().includes("310")) return `Avec la ca
 return true;
 -->
 
+### Challenge 7 : Bonus · Filtres combinés
+
+La catégorie, la recherche et le tri fonctionnent **ensemble** : choisir une catégorie garde la recherche en cours, et le tri s'applique à ce qui est affiché. Les statistiques suivent toujours la liste affichée.
+
+<!-- hint
+Garde l'état (catégorie, recherche, tri) et écris une seule fonction qui calcule la liste à afficher.
+-->
+
+<!-- hint
+Chaque écouteur appelle cette fonction : elle applique le filtre, puis la recherche, puis le tri.
+-->
+
+<!-- check
+await choose("#categorie", "informatique");
+await type("#recherche", "s");
+let noms = $$("#grille .carte h3").map(h => text(h)).sort();
+if (noms.join(",") !== "Souris sans fil,Écran 24 pouces") return `Informatique + « s » : il doit rester Souris sans fil et Écran 24 pouces (il reste ${noms.length} carte(s)).`;
+await choose("#categorie", "tous");
+noms = $$("#grille .carte h3").map(h => text(h));
+if (noms.length !== 5) return `Toutes catégories + « s » : 5 produits doivent rester affichés (il y en a ${noms.length}). La recherche doit être gardée.`;
+await click("#trier");
+const prix = $$("#grille .carte .prix").map(p => parseInt(text(p)));
+if (prix.length !== 5 || prix.some((p, i) => i > 0 && p < prix[i - 1])) return "Le tri doit s'appliquer aux 5 produits affichés, sans enlever la recherche.";
+if (!(text("#stats").match(/\d+/g) || []).includes("5")) return "#stats doit indiquer les 5 produits affichés.";
+return true;
+-->

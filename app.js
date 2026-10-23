@@ -45,6 +45,34 @@ const htmlView = document.querySelector("#sb-html");
 const verifyButton = document.querySelector("#sb-verify");
 const importButton = document.querySelector("#sb-import");
 
+/* ── Code editor: CodeMirror when the CDN is reachable, plain textarea otherwise ── */
+const runFromEditor = () => { resultBox.hidden = true; run(); };
+
+const codeMirror = window.CodeMirror ? CodeMirror.fromTextArea(editor, {
+  mode: "javascript",
+  lineNumbers: true,
+  tabSize: 2,
+  indentUnit: 2,
+  matchBrackets: true,
+  autoCloseBrackets: true,
+  extraKeys: {
+    "Ctrl-Enter": runFromEditor,
+    "Cmd-Enter": runFromEditor,
+    Tab: cm => cm.somethingSelected() ? cm.indentSelection("add") : cm.execCommand("insertSoftTab")
+  }
+}) : null;
+
+function getCode() {
+  return codeMirror ? codeMirror.getValue() : editor.value;
+}
+
+function setCode(value) {
+  if (!codeMirror) { editor.value = value; return; }
+  codeMirror.setValue(value);
+  codeMirror.clearHistory();
+  codeMirror.refresh();
+}
+
 /* ── Theme ── */
 const themeToggle = document.querySelector("#theme-toggle");
 
@@ -73,15 +101,39 @@ function doneCount(lessonId) {
   return { done, total };
 }
 
+/* ── Locks: a step opens when the previous one is finished, a challenge when the previous ones are passed.
+   Bonus challenges (always last) never lock anything. localStorage "domws:unlock" = "1" opens everything. ── */
+const unlocked = () => store.get("unlock") === "1";
+const stepLessons = lessons.filter(lesson => lesson.scene);
+
+// A step is finished when its required (non-bonus) challenges are all passed
+function lessonDone(lessonId) {
+  const required = Number(store.get(`req:${lessonId}`)) || 0;
+  if (!required) return false;
+  for (let i = 1; i <= required; i++) if (!store.get(`done:${lessonId}:c${i}`)) return false;
+  return true;
+}
+
+// The step that must be finished first, or null when this one is open
+function lockedBy(lesson) {
+  const position = stepLessons.indexOf(lesson);
+  if (unlocked() || position <= 0) return null;
+  const previous = stepLessons[position - 1];
+  return lessonDone(previous.id) ? null : previous;
+}
+
 function renderProgress() {
   let all = 0;
   lessons.forEach(lesson => {
     const { done, total } = doneCount(lesson.id);
     all += done;
-    const badge = nav.querySelector(`[data-id="${lesson.id}"] .lesson-progress`);
-    if (!badge) return;
-    badge.textContent = total ? (done === total ? "✓" : `${done}/${total}`) : "";
-    badge.classList.toggle("complete", total > 0 && done === total);
+    const link = nav.querySelector(`[data-id="${lesson.id}"]`);
+    if (!link) return;
+    const badge = link.querySelector(".lesson-progress");
+    const locked = Boolean(lockedBy(lesson));
+    link.classList.toggle("locked", locked);
+    badge.textContent = locked ? "🔒" : total ? (done === total ? "✓" : `${done}/${total}`) : "";
+    badge.classList.toggle("complete", !locked && total > 0 && done === total);
   });
   document.querySelector("#global-progress").textContent = `${all} challenge${all > 1 ? "s" : ""} réussi${all > 1 ? "s" : ""}`;
 }
@@ -176,10 +228,12 @@ function parseLesson(markdown) {
     const isChallenge = /^### (Challenge|Étape) \d/.test(part);
     const check = takeBlock(part, "check");
     const starter = takeBlock(part, "starter");
-    const clean = part.replace(/<!--\s*(check|starter)\s*\n[\s\S]*?-->\s*\n?/g, "");
+    const hints = [...part.matchAll(/<!--\s*hint\s*\n([\s\S]*?)-->/g)].map(match => match[1].trim());
+    const clean = part.replace(/<!--\s*(check|starter|hint)\s*\n[\s\S]*?-->\s*\n?/g, "");
     if (!isChallenge) return { html: markdownToHtml(clean) };
     const [heading, ...rest] = clean.split("\n");
-    return { challenge: true, title: heading.replace(/^###\s+/, "").trim(), html: markdownToHtml(rest.join("\n")), check, starter };
+    const title = heading.replace(/^###\s+/, "").trim();
+    return { challenge: true, title, bonus: /bonus/i.test(title), html: markdownToHtml(rest.join("\n")), check, starter, hints };
   });
 }
 
@@ -199,6 +253,14 @@ function defaultCode(index) {
 function isDone(index) {
   return Boolean(store.get(`done:${current.lesson.id}:c${index + 1}`));
 }
+
+// A challenge is locked while a previous required (non-bonus) challenge is not passed
+function isLocked(index) {
+  if (unlocked() || current.challenges[index].bonus) return false;
+  return current.challenges.slice(0, index).some((challenge, i) => !challenge.bonus && !isDone(i));
+}
+
+const hintKey = index => `hint:${current.lesson.id}:c${index + 1}`;
 
 /* ── Show home (hero) ── */
 function showHome() {
@@ -236,6 +298,24 @@ async function openLesson(id, challengeNumber) {
   current.challenges = [];
   current.active = -1;
 
+  await totalsReady;
+  if (current.lesson !== lesson) return;
+  const previous = lockedBy(lesson);
+  if (previous) {
+    sandbox.hidden = true;
+    lessonView.classList.remove("with-sandbox");
+    const { done } = doneCount(previous.id);
+    const required = Number(store.get(`req:${previous.id}`)) || 0;
+    readerBody.innerHTML = `
+      <div class="locked-step">
+        <span class="locked-icon">🔒</span>
+        <h2>Étape verrouillée</h2>
+        <p>Termine d'abord « ${esc(previous.title)} » : ${Math.min(done, required)} / ${required} challenges obligatoires réussis. Les challenges bonus ne sont pas obligatoires.</p>
+        <button class="code-btn" type="button" data-open="${previous.id}">Aller à « ${esc(previous.title)} » →</button>
+      </div>`;
+    return;
+  }
+
   try {
     const load = url => fetch(url, { cache: "no-cache" }).then(response => { if (!response.ok) throw new Error(); return response.text(); });
     const [markdown, scene] = await Promise.all([load(lesson.file), lesson.scene ? load(lesson.scene) : ""]);
@@ -251,7 +331,7 @@ async function openLesson(id, challengeNumber) {
 
   if (!lesson.scene) return;
   showSceneHtml();
-  const firstTodo = current.challenges.findIndex((_, index) => !isDone(index));
+  const firstTodo = current.challenges.findIndex((_, index) => !isDone(index) && !isLocked(index));
   const start = challengeNumber ? challengeNumber - 1 : (firstTodo === -1 ? 0 : firstTodo);
   activate(Math.min(start, current.challenges.length - 1), false);
 }
@@ -263,14 +343,16 @@ function renderLesson(sections) {
     const index = number++;
     current.challenges.push(section);
     return `
-      <article class="challenge" data-index="${index}">
+      <article class="challenge${/bonus/i.test(section.title) ? " bonus" : ""}" data-index="${index}">
         <div class="challenge-head">
           <h3>${inline(section.title)}</h3>
           <span class="challenge-status"></span>
         </div>
         ${section.html}
+        <div class="hints"></div>
         <div class="challenge-actions">
           ${current.lesson.scene ? '<button class="code-btn" type="button">▶ Coder ici</button>' : ""}
+          ${section.hints.length ? '<button class="hint-btn" type="button"></button>' : ""}
         </div>
       </article>`;
   }).join("");
@@ -281,7 +363,10 @@ function renderLesson(sections) {
     if (button) card.querySelector(".challenge-actions").append(button);
   });
 
-  if (current.challenges.length) store.set(`total:${current.lesson.id}`, current.challenges.length);
+  if (current.challenges.length) {
+    store.set(`total:${current.lesson.id}`, current.challenges.length);
+    store.set(`req:${current.lesson.id}`, current.challenges.filter(challenge => !challenge.bonus).length);
+  }
   updateCards();
   renderProgress();
 }
@@ -290,10 +375,27 @@ function updateCards() {
   readerBody.querySelectorAll(".challenge").forEach(card => {
     const index = Number(card.dataset.index);
     const done = isDone(index);
+    const locked = isLocked(index);
     card.classList.toggle("done", done);
+    card.classList.toggle("locked", locked);
     card.classList.toggle("active", index === current.active);
-    card.querySelector(".challenge-status").textContent = done ? "Réussi ✓" : "À faire";
+    card.querySelector(".challenge-status").textContent = done ? "Réussi ✓" : locked ? "🔒 Verrouillé" : "À faire";
+    const codeButton = card.querySelector(".code-btn");
+    if (codeButton) codeButton.disabled = locked;
+    renderHints(card, index);
   });
+}
+
+// Shows the hints already opened, and the button for the next one
+function renderHints(card, index) {
+  const hints = current.challenges[index].hints;
+  const shown = Math.min(Number(store.get(hintKey(index))) || 0, hints.length);
+  card.querySelector(".hints").innerHTML = hints.slice(0, shown)
+    .map((hint, i) => `<p class="hint"><strong>Indice ${i + 1} :</strong> ${inline(hint)}</p>`).join("");
+  const button = card.querySelector(".hint-btn");
+  if (!button) return;
+  button.hidden = shown >= hints.length || isLocked(index);
+  button.textContent = `💡 Indice ${shown + 1} / ${hints.length}`;
 }
 
 /* ── Sandbox ── */
@@ -305,12 +407,12 @@ function showSceneHtml() {
 }
 
 function activate(index, scroll = true) {
-  if (index < 0 || index >= current.challenges.length) return;
+  if (index < 0 || index >= current.challenges.length || isLocked(index)) return;
   saveCode();
   current.active = index;
   const challenge = current.challenges[index];
   sbTitle.textContent = challenge.title;
-  editor.value = store.get(codeKey(index)) ?? defaultCode(index);
+  setCode(store.get(codeKey(index)) ?? defaultCode(index));
   importButton.hidden = current.lesson.shared || index === 0;
   resultBox.hidden = true;
   updateCards();
@@ -320,7 +422,7 @@ function activate(index, scroll = true) {
 
 function saveCode() {
   if (!current.lesson || current.active < 0) return;
-  store.set(codeKey(current.active), editor.value);
+  store.set(codeKey(current.active), getCode());
 }
 
 // Runs inside the iframe, before the scene and the learner's code.
@@ -339,7 +441,13 @@ function boot() {
     if (value instanceof Error) return `${value.name}: ${value.message}`;
     try { return JSON.stringify(value); } catch (error) { return String(value); }
   };
+  // A loop full of console.log would flood the page: the console stops after 500 messages
+  let sent = 0;
   const send = (type, args, line) => {
+    if (type !== "error" && ++sent > 500) {
+      if (sent === 501) parent.postMessage({ __domws: true, type: "warn", text: "Console limitée à 500 messages : les suivants ne sont pas affichés." }, "*");
+      return;
+    }
     const text = args.map(describe).join(" ");
     (type === "error" ? window.__errors : window.__logs).push(text);
     parent.postMessage({ __domws: true, type, text, line }, "*");
@@ -350,9 +458,78 @@ function boot() {
   });
   // Simulated network latency, so loading states can be seen (and checked)
   const realFetch = window.fetch.bind(window);
-  window.fetch = (...args) => new Promise(resolve => setTimeout(resolve, 300)).then(() => realFetch(...args));
+  window.__fetchCount = 0;
+  window.fetch = (...args) => {
+    window.__fetchCount++;
+    return new Promise(resolve => setTimeout(resolve, 300)).then(() => realFetch(...args));
+  };
+  // Called at the start of every loop body: stops a loop that runs for more than 2 seconds without a pause
+  let turns = 0;
+  let started = 0;
+  window.__loopGuard = () => {
+    if (turns++ === 0) { started = performance.now(); setTimeout(() => { turns = 0; }); }
+    if (turns % 10000 === 0 && performance.now() - started > 2000) {
+      turns = 0;
+      throw new Error("Boucle infinie arrêtée (plus de 2 secondes) : vérifie la condition de ta boucle.");
+    }
+  };
   window.addEventListener("error", event => send("error", [event.message], event.lineno));
   window.addEventListener("unhandledrejection", event => send("error", ["Promesse rejetée : " + (event.reason && event.reason.message || event.reason)]));
+}
+
+// Adds __loopGuard() at the start of every for / while / do body, so an infinite
+// loop throws an error instead of freezing the tab. No newline is added: line numbers stay the same.
+function guardLoops(code) {
+  const length = code.length;
+  const isWord = char => /[\w$]/.test(char || "");
+  const skipSpaces = index => { while (index < length && /\s/.test(code[index])) index++; return index; };
+
+  // Index just after a string / comment starting at index, or -1 if there is none
+  const skipLiteral = index => {
+    const char = code[index];
+    if (char === "/" && code[index + 1] === "/") { const end = code.indexOf("\n", index); return end === -1 ? length : end; }
+    if (char === "/" && code[index + 1] === "*") { const end = code.indexOf("*/", index + 2); return end === -1 ? length : end + 2; }
+    if (char === '"' || char === "'" || char === "`") {
+      let i = index + 1;
+      while (i < length && code[i] !== char) i += code[i] === "\\" ? 2 : 1;
+      return i + 1;
+    }
+    return -1;
+  };
+
+  const closingParen = open => {
+    let depth = 0;
+    for (let i = open; i < length; i++) {
+      const end = skipLiteral(i);
+      if (end !== -1) { i = end - 1; continue; }
+      if (code[i] === "(") depth++;
+      if (code[i] === ")" && --depth === 0) return i;
+    }
+    return -1;
+  };
+
+  let out = "";
+  let i = 0;
+  while (i < length) {
+    const end = skipLiteral(i);
+    if (end !== -1) { out += code.slice(i, end); i = end; continue; }
+    if (!isWord(code[i]) || isWord(code[i - 1])) { out += code[i++]; continue; }
+
+    let j = i;
+    while (isWord(code[j])) j++;
+    const word = code.slice(i, j);
+    let brace = -1;
+    if (word === "for" || word === "while") {
+      const open = skipSpaces(j);
+      const close = code[open] === "(" ? closingParen(open) : -1;
+      if (close !== -1 && code[skipSpaces(close + 1)] === "{") brace = skipSpaces(close + 1);
+    } else if (word === "do" && code[skipSpaces(j)] === "{") {
+      brace = skipSpaces(j);
+    }
+    if (brace !== -1) { out += code.slice(i, brace + 1) + "__loopGuard();"; i = brace + 1; }
+    else { out += word; i = j; }
+  }
+  return out;
 }
 
 let runCount = 0;
@@ -364,7 +541,7 @@ function buildDocument(scene, code) {
   html = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, () => marker + "</body>") : html + marker;
   const position = html.indexOf(marker);
   const before = html.slice(0, position) + "<script>\n";
-  const safeCode = code.replace(/<\/script/gi, "<\\/script");
+  const safeCode = guardLoops(code).replace(/<\/script/gi, "<\\/script");
   return {
     html: `${before}${safeCode}\n<\/script><!--run ${++runCount}-->${html.slice(position + marker.length)}`,
     offset: before.split("\n").length - 1
@@ -375,7 +552,7 @@ function run() {
   if (!current.lesson || !current.lesson.scene) return Promise.resolve();
   saveCode();
   logBox.innerHTML = "";
-  const { html, offset } = buildDocument(current.scene, editor.value);
+  const { html, offset } = buildDocument(current.scene, getCode());
   current.offset = offset;
   return new Promise(resolve => {
     frame.onload = () => { frame.onload = null; resolve(); };
@@ -427,7 +604,15 @@ const checkHelpers = {
   logs: () => frame.contentWindow.__logs || [],
   logged: value => (frame.contentWindow.__logs || []).some(line => line.includes(value)),
   errors: () => frame.contentWindow.__errors || [],
+  code: () => getCode().replace(/\/\/.*$|\/\*[\s\S]*?\*\//gm, ""),
+  fetches: () => frame.contentWindow.__fetchCount || 0,
   wait,
+  async fire(target, type, options = {}) {
+    const win = frame.contentWindow;
+    const Type = /^key/.test(type) ? win.KeyboardEvent : /click|mouse/.test(type) ? win.MouseEvent : win.Event;
+    need(target).dispatchEvent(new Type(type, { bubbles: true, cancelable: true, ...options }));
+    await wait(40);
+  },
   async rerun() { await run(); freezeTransitions(); await wait(60); },
   async click(target) { need(target).click(); await wait(40); },
   async type(target, value) {
@@ -514,15 +699,15 @@ document.querySelector("#sb-clear").addEventListener("click", () => { logBox.inn
 
 document.querySelector("#sb-reset").addEventListener("click", () => {
   if (!confirm("Remettre le code de départ ? Ton code actuel sera effacé.")) return;
-  editor.value = defaultCode(current.active);
+  setCode(defaultCode(current.active));
   run();
 });
 
 importButton.addEventListener("click", () => {
   const previous = store.get(`code:${current.lesson.id}:c${current.active}`);
   if (!previous) { showResult("info", "Le challenge précédent n'a pas encore de code."); return; }
-  if (editor.value.trim() !== defaultCode(current.active).trim() && !confirm("Remplacer ton code actuel par celui du challenge précédent ?")) return;
-  editor.value = previous;
+  if (getCode().trim() !== defaultCode(current.active).trim() && !confirm("Remplacer ton code actuel par celui du challenge précédent ?")) return;
+  setCode(previous);
   run();
 });
 
@@ -542,22 +727,33 @@ document.querySelectorAll(".sb-tab").forEach(tab => tab.addEventListener("click"
 }));
 
 let saveTimer;
-editor.addEventListener("input", () => { clearTimeout(saveTimer); saveTimer = setTimeout(saveCode, 400); });
+const scheduleSave = () => { clearTimeout(saveTimer); saveTimer = setTimeout(saveCode, 400); };
 
-editor.addEventListener("keydown", event => {
-  if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-    event.preventDefault();
-    resultBox.hidden = true;
-    run();
-  } else if (event.key === "Tab" && !event.shiftKey) {
-    event.preventDefault();
-    editor.setRangeText("  ", editor.selectionStart, editor.selectionEnd, "end");
-  }
-});
+if (codeMirror) {
+  codeMirror.on("change", scheduleSave);
+} else {
+  editor.addEventListener("input", scheduleSave);
+  editor.addEventListener("keydown", event => {
+    if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+      event.preventDefault();
+      runFromEditor();
+    } else if (event.key === "Tab" && !event.shiftKey) {
+      event.preventDefault();
+      editor.setRangeText("  ", editor.selectionStart, editor.selectionEnd, "end");
+    }
+  });
+}
 
 readerBody.addEventListener("click", event => {
   const card = event.target.closest(".challenge");
   if (event.target.closest(".code-btn") && card) activate(Number(card.dataset.index));
+  if (event.target.closest(".hint-btn") && card) {
+    const index = Number(card.dataset.index);
+    store.set(hintKey(index), (Number(store.get(hintKey(index))) || 0) + 1);
+    renderHints(card, index);
+  }
+  const open = event.target.closest("[data-open]");
+  if (open) openLesson(open.dataset.open);
   const solution = event.target.closest(".solution-btn");
   if (solution) {
     const data = (card || readerBody).querySelector(".solution-data");
@@ -571,6 +767,7 @@ readerBody.addEventListener("click", event => {
 window.addEventListener("beforeunload", saveCode);
 
 /* ── Init ── */
+const totalsReady = loadTotals();
 renderNav();
 
 nav.addEventListener("click", event => {
@@ -620,3 +817,129 @@ function hideModal() {
 closeModal.addEventListener("click", hideModal);
 modal.addEventListener("click", event => { if (event.target === modal) hideModal(); });
 document.addEventListener("keydown", event => { if (event.key === "Escape" && !modal.hidden) hideModal(); });
+
+/* ── Challenge totals: counted from every lesson file, so the progress is right before a lesson is opened ── */
+async function loadTotals() {
+  await Promise.all(lessons.filter(lesson => lesson.scene).map(async lesson => {
+    try {
+      const response = await fetch(lesson.file, { cache: "no-cache" });
+      if (!response.ok) return;
+      const titles = (await response.text()).match(/^### (?:Challenge|Étape) \d.*$/gm) || [];
+      store.set(`total:${lesson.id}`, titles.length);
+      store.set(`req:${lesson.id}`, titles.filter(title => !/bonus/i.test(title)).length);
+    } catch {}
+  }));
+  renderProgress();
+}
+
+
+/* ── My work: summary, export and import ── */
+const workModal = document.querySelector("#work-modal");
+const workName = document.querySelector("#work-name");
+const workNote = document.querySelector("#work-note");
+
+function progressLines() {
+  return lessons.filter(lesson => lesson.scene).map(lesson => {
+    const { done, total } = doneCount(lesson.id);
+    return { lesson, done, total };
+  });
+}
+
+function summaryText() {
+  const lines = progressLines();
+  const done = lines.reduce((sum, line) => sum + line.done, 0);
+  const total = lines.reduce((sum, line) => sum + line.total, 0);
+  return [
+    `Workshop JavaScript DOM — ${workName.value.trim() || "(nom non renseigné)"}`,
+    `Progression : ${done} / ${total} challenges`,
+    ...lines.map(({ lesson, done, total }) => `${lesson.id} ${lesson.title} : ${done}/${total}${total && done === total ? " ✓" : ""}`)
+  ].join("\n");
+}
+
+function renderSummary() {
+  document.querySelector("#work-summary").innerHTML = progressLines().map(({ lesson, done, total }) => `
+    <div class="work-row${total && done === total ? " complete" : ""}">
+      <span>${lesson.id}</span><strong>${esc(lesson.title)}</strong><em>${done}/${total}</em>
+      <i style="--ratio:${total ? done / total : 0}"></i>
+    </div>`).join("");
+}
+
+function openWork() {
+  saveCode();
+  workName.value = store.get("name") || "";
+  workNote.textContent = "Ton travail est enregistré dans ce navigateur uniquement. Exporte-le pour le garder, le retrouver sur un autre ordinateur ou l'envoyer à ton formateur.";
+  renderSummary();
+  workModal.hidden = false;
+}
+
+function slug(text) {
+  return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function exportWork() {
+  saveCode();
+  const data = {};
+  try {
+    Object.keys(localStorage).filter(key => key.startsWith(STORE) && key !== STORE + "theme").forEach(key => {
+      data[key.slice(STORE.length)] = localStorage.getItem(key);
+    });
+  } catch {}
+  const name = workName.value.trim();
+  const file = {
+    app: "workshop-js-dom",
+    version: 1,
+    name,
+    exportedAt: new Date().toISOString(),
+    summary: summaryText(),
+    data
+  };
+  const blob = new Blob([JSON.stringify(file, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `workshop-dom-${slug(name) || "travail"}-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+  workNote.textContent = "Fichier téléchargé. Garde-le précieusement ou envoie-le à ton formateur.";
+}
+
+async function importWork(file) {
+  let content;
+  try {
+    content = JSON.parse(await file.text());
+  } catch {
+    workNote.textContent = "Ce fichier n'est pas un export valide.";
+    return;
+  }
+  if (!content || content.app !== "workshop-js-dom" || typeof content.data !== "object") {
+    workNote.textContent = "Ce fichier n'est pas un export du Workshop JavaScript DOM.";
+    return;
+  }
+  if (!confirm(`Importer le travail de ${content.name || "ce fichier"} ? Le travail actuel de ce navigateur sera remplacé.`)) return;
+  try {
+    Object.keys(localStorage).filter(key => key.startsWith(STORE) && key !== STORE + "theme").forEach(key => localStorage.removeItem(key));
+  } catch {}
+  Object.entries(content.data)
+    .filter(([key, value]) => /^(code|done|total):|^name$/.test(key) && typeof value === "string")
+    .forEach(([key, value]) => store.set(key, value));
+  location.reload();
+}
+
+document.querySelector("#work-button").addEventListener("click", openWork);
+document.querySelector("#close-work").addEventListener("click", () => { workModal.hidden = true; });
+workModal.addEventListener("click", event => { if (event.target === workModal) workModal.hidden = true; });
+document.addEventListener("keydown", event => { if (event.key === "Escape") workModal.hidden = true; });
+workName.addEventListener("input", () => store.set("name", workName.value.trim()));
+document.querySelector("#work-export").addEventListener("click", exportWork);
+document.querySelector("#work-import").addEventListener("click", () => document.querySelector("#work-file").click());
+document.querySelector("#work-file").addEventListener("change", event => {
+  if (event.target.files[0]) importWork(event.target.files[0]);
+  event.target.value = "";
+});
+document.querySelector("#work-copy").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(summaryText());
+    workNote.textContent = "Résumé copié : colle-le où ton formateur te le demande.";
+  } catch {
+    workNote.textContent = summaryText();
+  }
+});

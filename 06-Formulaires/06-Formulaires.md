@@ -82,6 +82,14 @@ message.addEventListener("input", () => {
 
 À l'envoi du formulaire, empêche le rechargement de la page et affiche `Bonjour <nom> !` dans `#resultat`.
 
+<!-- hint
+Écoute l'événement `submit` sur le formulaire, pas `click` sur le bouton.
+-->
+
+<!-- hint
+Première ligne de l'écouteur : `event.preventDefault()`.
+-->
+
 <!-- check
 await type("#nom", "Sara");
 await submit("#inscription");
@@ -92,6 +100,14 @@ return true;
 ### Challenge 3 : Nom obligatoire
 
 Reprends le challenge 2 (bouton « Reprendre le précédent »). Si le nom est vide (ou ne contient que des espaces), affiche `Le nom est obligatoire` dans `#erreur` et **pas** de message de bienvenue. Quand le nom est correct, l'erreur disparaît.
+
+<!-- hint
+`trim()` enlève les espaces : un nom fait seulement d'espaces devient `""`.
+-->
+
+<!-- hint
+Si le nom est vide : affiche l'erreur et fais `return`. Sinon : vide l'erreur et affiche le message.
+-->
 
 <!-- check
 await type("#nom", "   ");
@@ -108,6 +124,14 @@ return true;
 ### Challenge 4 : Email valide
 
 Ajoute une deuxième règle : l'email doit contenir un `@` et un `.`. Sinon, `#erreur` affiche `Email invalide` et il n'y a pas de message de bienvenue.
+
+<!-- hint
+`email.includes("@")` renvoie `true` ou `false`.
+-->
+
+<!-- hint
+Teste le nom, puis l'email : chaque règle qui échoue affiche son erreur et fait `return`.
+-->
 
 <!-- check
 await type("#nom", "Sara");
@@ -129,6 +153,14 @@ return true;
 
 Le bouton `#envoyer` est **désactivé** tant que la case `#cgu` n'est pas cochée. Il s'active quand on coche, et se désactive à nouveau si on décoche.
 
+<!-- hint
+Un bouton se désactive avec `bouton.disabled = true`.
+-->
+
+<!-- hint
+Écoute `change` sur la case et utilise `cgu.checked` : `disabled = !cgu.checked`.
+-->
+
 <!-- check
 if (!$("#envoyer").disabled) return "Au chargement, le bouton #envoyer doit être désactivé (propriété disabled).";
 await click("#cgu");
@@ -138,3 +170,23 @@ if (!$("#envoyer").disabled) return "Quand on décoche #cgu, le bouton doit se d
 return true;
 -->
 
+### Challenge 6 : Bonus · Presque plein
+
+Reprends le compteur du challenge 1. Quand le message dépasse **90** caractères, `#compteur` reçoit la classe `limite` (son style rouge est déjà prévu dans la page). En dessous, la classe disparaît.
+
+<!-- hint
+Reprends le compteur du challenge 1, dans le même écouteur `input`.
+-->
+
+<!-- hint
+`classList.toggle("limite", condition)` ajoute la classe si la condition est vraie, l'enlève sinon.
+-->
+
+<!-- check
+await type("#message", "x".repeat(95));
+if (text("#compteur") !== "95 / 100") return "Le compteur doit toujours afficher le nombre de caractères (95 / 100).";
+if (!$("#compteur").classList.contains("limite")) return "À 95 caractères, #compteur doit avoir la classe limite.";
+await type("#message", "x".repeat(90));
+if ($("#compteur").classList.contains("limite")) return "À 90 caractères, la classe limite ne doit pas être là.";
+return true;
+-->

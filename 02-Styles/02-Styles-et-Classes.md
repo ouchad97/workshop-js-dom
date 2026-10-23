@@ -64,18 +64,35 @@ premiere.style.backgroundColor = "crimson";
 
 ### Challenge 2 : Agrandir l'escalier
 
-Agrandis **toutes** les marches de l'escalier (plus larges ou plus hautes).
+Agrandis **toutes** les marches de l'escalier (plus larges ou plus hautes), avec une boucle.
+
+<!-- hint
+Il faut modifier chaque marche : sélectionne-les toutes, puis fais une boucle.
+-->
+
+<!-- hint
+Dans la boucle : `marche.style.width = "80px"` (n'oublie pas l'unité).
+-->
 
 <!-- check
 const steps = $$(".step");
 const petite = steps.find(s => s.offsetWidth <= 60 && s.offsetHeight <= 34);
 if (petite) return `La marche ${petite.textContent} n'a pas été agrandie : change width ou height de chaque marche.`;
+if (!/forEach|for\s*\(|while\s*\(/.test(code())) return "Utilise une boucle (forEach, for…) au lieu de répéter le code.";
 return true;
 -->
 
 ### Challenge 3 : Les marches impaires
 
 Change uniquement la couleur des marches impaires : les marches **1, 3 et 5**.
+
+<!-- hint
+Utilise le deuxième paramètre de `forEach` : l'index.
+-->
+
+<!-- hint
+Les marches 1, 3 et 5 sont aux index 0, 2 et 4 : `index % 2 === 0`.
+-->
 
 <!-- check
 const steps = $$(".step");
@@ -89,6 +106,14 @@ return true;
 
 Ajoute un texte personnalisé sur la **dernière** marche (par exemple « Top ! »).
 
+<!-- hint
+La dernière marche est à l'index `marches.length - 1`.
+-->
+
+<!-- hint
+Change son texte avec `textContent`.
+-->
+
 <!-- check
 const steps = $$(".step");
 const derniere = steps[steps.length - 1];
@@ -101,6 +126,14 @@ return true;
 
 Ajoute une nouvelle classe à la **troisième** marche. Tu peux utiliser la classe `active` déjà prévue dans le CSS.
 
+<!-- hint
+La troisième marche a l'id `step3`.
+-->
+
+<!-- hint
+`classList.add("active")` ajoute une classe sans enlever `step`.
+-->
+
 <!-- check
 const troisieme = $$(".step")[2];
 if (troisieme.classList.length < 2) return "La troisième marche n'a toujours que la classe step : utilise classList.add().";
@@ -108,3 +141,23 @@ if ($$(".step").some((s, i) => i !== 2 && s.classList.length > 1)) return "Seule
 return true;
 -->
 
+### Challenge 6 : Bonus · Un dégradé
+
+Donne une couleur **différente** à chaque marche, de plus en plus claire en montant. Astuce : calcule la couleur à partir de l'index, par exemple avec `hsl(160, 50%, ${20 + index * 12}%)`.
+
+<!-- hint
+Dans `forEach((marche, index) => ...)`, l'index va de 0 à 4.
+-->
+
+<!-- hint
+Construis la couleur avec un template literal : `hsl(160, 50%, ${20 + index * 12}%)`.
+-->
+
+<!-- check
+const couleurs = $$(".step").map(s => css(s, "backgroundColor"));
+if (new Set(couleurs).size !== couleurs.length) return "Chaque marche doit avoir une couleur différente.";
+const clarte = c => { const [r, g, b] = c.match(/\d+/g).map(Number); return r + g + b; };
+if (couleurs.some((c, i) => i > 0 && clarte(c) <= clarte(couleurs[i - 1]))) return "Les couleurs doivent devenir de plus en plus claires de la marche 1 à la marche 5.";
+if (!/forEach|for\s*\(|while\s*\(/.test(code())) return "Utilise une boucle (forEach, for…) au lieu de répéter le code.";
+return true;
+-->
