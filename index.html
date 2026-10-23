@@ -9,7 +9,51 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
-  <link rel="stylesheet" href="styles.css">
+  <script>
+    // Always the latest version, without clearing the cache:
+    // styles.css and app.js are loaded with their current ETag in the URL,
+    // and a page shown from an old browser cache reloads itself once.
+    (function () {
+      const page = location.pathname;
+      const tag = url => fetch(url, { method: "HEAD", cache: "no-cache" })
+        .then(response => (response.headers.get("etag") || response.headers.get("last-modified") || "").replace(/\W/g, ""))
+        .catch(() => "");
+      window.assetVersion = () => Promise.all(["styles.css", "app.js", page].map(tag)).then(tags => tags.join("-"));
+
+      const root = document.documentElement;
+      const show = () => { root.style.visibility = ""; };
+      root.style.visibility = "hidden";
+      setTimeout(show, 3000);
+
+      Promise.all([tag("styles.css"), tag("app.js")]).then(([css, js]) => {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "styles.css?v=" + css;
+        link.onload = link.onerror = show;
+        document.head.append(link);
+        const start = () => {
+          const script = document.createElement("script");
+          script.src = "app.js?v=" + js;
+          document.body.append(script);
+        };
+        if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+        else start();
+      });
+
+      fetch(page, { cache: "force-cache" }).then(response => response.text())
+        .then(cached => fetch(page, { cache: "no-cache" }).then(response => response.text()).then(latest => {
+          let reloaded = false;
+          try { reloaded = sessionStorage.getItem("domws:reloaded") === "1"; } catch {}
+          if (cached !== latest && !reloaded) {
+            try { sessionStorage.setItem("domws:reloaded", "1"); } catch {}
+            location.reload();
+          } else {
+            try { sessionStorage.removeItem("domws:reloaded"); } catch {}
+          }
+        }))
+        .catch(() => {});
+    })();
+  </script>
 </head>
 <body>
   <div class="app-shell">
@@ -210,6 +254,5 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
-  <script src="app.js"></script>
 </body>
 </html>

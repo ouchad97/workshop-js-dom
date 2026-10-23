@@ -943,3 +943,16 @@ document.querySelector("#work-copy").addEventListener("click", async () => {
     workNote.textContent = summaryText();
   }
 });
+
+/* ── New version: tabs left open check every 5 minutes and offer to reload ── */
+if (window.assetVersion) {
+  const loadedVersion = window.assetVersion();
+  setInterval(async () => {
+    if (document.querySelector(".update-banner") || await window.assetVersion() === await loadedVersion) return;
+    const banner = document.createElement("div");
+    banner.className = "update-banner";
+    banner.innerHTML = '<span>Une nouvelle version du workshop est disponible. Ton code est sauvegardé.</span><button type="button">Recharger</button>';
+    banner.querySelector("button").addEventListener("click", () => { saveCode(); location.reload(); });
+    document.body.append(banner);
+  }, 5 * 60 * 1000);
+}
