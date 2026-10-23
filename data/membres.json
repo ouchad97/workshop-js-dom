@@ -1,0 +1,12 @@
+[
+  { "id": 1, "nom": "Salma Idrissi", "ville": "Safi", "role": "apprenante", "email": "salma.idrissi@exemple.ma" },
+  { "id": 2, "nom": "Youssef Amrani", "ville": "Rabat", "role": "apprenant", "email": "youssef.amrani@exemple.ma" },
+  { "id": 3, "nom": "Imane Berrada", "ville": "Casablanca", "role": "apprenante", "email": "imane.berrada@exemple.ma" },
+  { "id": 4, "nom": "Hamza Tazi", "ville": "Safi", "role": "apprenant", "email": "hamza.tazi@exemple.ma" },
+  { "id": 5, "nom": "Nour El Fassi", "ville": "Marrakech", "role": "formatrice", "email": "nour.elfassi@exemple.ma" },
+  { "id": 6, "nom": "Anas Bennani", "ville": "Rabat", "role": "apprenant", "email": "anas.bennani@exemple.ma" },
+  { "id": 7, "nom": "Khadija Alaoui", "ville": "Agadir", "role": "apprenante", "email": "khadija.alaoui@exemple.ma" },
+  { "id": 8, "nom": "Omar Chraibi", "ville": "Safi", "role": "formateur", "email": "omar.chraibi@exemple.ma" },
+  { "id": 9, "nom": "Rim Lahlou", "ville": "Casablanca", "role": "apprenante", "email": "rim.lahlou@exemple.ma" },
+  { "id": 10, "nom": "Mehdi Ziani", "ville": "Rabat", "role": "apprenant", "email": "mehdi.ziani@exemple.ma" }
+]

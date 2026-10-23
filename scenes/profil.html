@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Carte de profil</title>
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #e8f2ee; font-family: "Segoe UI", sans-serif; }
+    .carte { width: 260px; padding: 24px; text-align: center; background: white; border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,.08); }
+    #avatar { width: 84px; height: 84px; border-radius: 50%; }
+    h2 { margin: 10px 0 2px; }
+    .metier { margin: 0; color: #1d6b59; font-size: 13px; }
+    #bio { color: #555; font-size: 13px; line-height: 1.5; }
+    #site { display: block; margin-bottom: 12px; color: #1d6b59; }
+    .badge { padding: 3px 10px; color: white; background: #999; border-radius: 99px; font-size: 12px; }
+    .badge[data-statut="en-ligne"] { background: #2e9e6b; }
+  </style>
+</head>
+<body>
+  <div class="carte" id="profil">
+    <img id="avatar" src="img/avatar-1.svg" alt="Avatar">
+    <h2 id="nom">Prénom Nom</h2>
+    <p id="metier" class="metier">Développeur·se web</p>
+    <p id="bio">Bio à compléter…</p>
+    <a id="site" href="#">Mon portfolio</a>
+    <span id="statut" class="badge" data-statut="hors-ligne">Hors ligne</span>
+  </div>
+</body>
+</html>

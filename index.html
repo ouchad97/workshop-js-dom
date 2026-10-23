@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Workshop JavaScript DOM : du premier querySelector à la manipulation de données, avec un bac à sable et des challenges vérifiés.">
+  <title>Workshop JavaScript DOM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#accueil" aria-label="Retour à l'accueil">
+        <span class="brand-mark">DOM</span>
+        <span>Workshop<br><strong>JavaScript DOM</strong></span>
+      </a>
+      <div class="topbar-meta">
+        <span class="status-dot"></span>
+        <span id="global-progress">0 challenge réussi</span>
+        <button class="theme-btn" id="theme-toggle" type="button" aria-label="Basculer le thème" title="Basculer le thème">🌙</button>
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Ouvrir le menu">☰</button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar" id="sidebar">
+        <nav class="lesson-nav" id="lesson-nav" aria-label="Navigation des notions"></nav>
+        <div class="sidebar-note">
+          <span class="note-icon">⌘</span>
+          <div><strong>Conseil</strong><br><span>Lis le HTML de la page avant de coder : on ne sélectionne bien que ce qu'on connaît.</span></div>
+        </div>
+      </aside>
+
+      <main class="main-content" id="main-content">
+        <section class="hero" id="hero">
+          <div class="hero-banner">
+            <div class="hero-copy">
+              <span class="eyebrow">Sélectionner · modifier · réagir · afficher</span>
+              <h1>Donne vie à tes pages,<br><em>un nœud à la fois.</em></h1>
+              <p>Un parcours DOM progressif : du premier <code>querySelector</code> jusqu'à l'affichage de données venues d'un fichier JSON. Chaque challenge se code et se vérifie directement dans la page.</p>
+              <div class="hero-actions">
+                <button class="primary-button" id="start-button" type="button">Commencer le parcours <span>→</span></button>
+                <span class="hero-caption">10 étapes · 2 mini-projets · vérification automatique</span>
+              </div>
+            </div>
+            <div class="hero-orbit" aria-hidden="true">
+              <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+              <div class="code-card"><span>const</span> btn = <b>document</b>.querySelector("button");<br>btn.addEventListener(<b>"click"</b>, go);<i>_</i></div>
+            </div>
+          </div>
+
+          <div class="home-content">
+            <div class="home-section">
+              <span class="eyebrow">Introduction</span>
+              <h2>Pourquoi apprendre le DOM ?</h2>
+              <p>Le DOM (Document Object Model) est la représentation de la page HTML que le navigateur donne à JavaScript. Grâce à lui, ton code peut lire la page, la modifier, réagir aux clics et aux saisies, et afficher des données. C'est le pont entre la logique JavaScript que tu connais déjà et ce que voit l'utilisateur.</p>
+            </div>
+
+            <div class="home-section">
+              <span class="eyebrow">Mode d'emploi</span>
+              <h2>Comment marche le bac à sable ?</h2>
+              <p>Chaque étape contient une page HTML de travail (l'escalier, une liste, un formulaire, un catalogue…) et des challenges.</p>
+              <ol class="howto">
+                <li>Lis la notion, puis l'onglet <strong>HTML</strong> du bac à sable pour connaître la page.</li>
+                <li>Clique sur <strong>Coder ici</strong> sous un challenge et écris ton JavaScript dans l'éditeur.</li>
+                <li><strong>Exécuter</strong> (ou <code>Ctrl + Entrée</code>) lance ton code sur une page neuve. La console affiche tes <code>console.log</code> et tes erreurs.</li>
+                <li><strong>Vérifier</strong> teste ton code automatiquement. Ton code et ta progression restent enregistrés dans ce navigateur.</li>
+              </ol>
+              <p>Pour lancer la plateforme sur ton ordinateur, ouvre un terminal dans le dossier du projet :</p>
+              <pre><code>npx serve .</code></pre>
+            </div>
+
+            <div class="home-section">
+              <span class="eyebrow">Parcours</span>
+              <h2>Objectifs du Workshop</h2>
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr><th>Étape</th><th>Objectifs</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>01</strong></td><td>Sélectionner des éléments : <code>getElementById</code>, <code>querySelector</code>, <code>querySelectorAll</code></td></tr>
+                    <tr><td><strong>02</strong></td><td>Modifier le style et les classes : <code>style</code>, <code>classList</code></td></tr>
+                    <tr><td><strong>03</strong></td><td>Contenu et attributs : <code>textContent</code>, <code>innerHTML</code>, <code>setAttribute</code>, <code>dataset</code></td></tr>
+                    <tr><td><strong>04</strong></td><td>Créer, ajouter, cloner et supprimer des éléments</td></tr>
+                    <tr><td><strong>05</strong></td><td>Événements : <code>addEventListener</code>, <code>click</code>, l'objet <code>event</code></td></tr>
+                    <tr><td><strong>06</strong></td><td>Formulaires : <code>value</code>, <code>submit</code>, <code>preventDefault</code>, validation</td></tr>
+                    <tr><td><strong>07</strong></td><td>Parcourir l'arbre et délégation d'événements : <code>closest</code>, <code>children</code></td></tr>
+                    <tr><td><strong>08</strong></td><td>Données → DOM : afficher, filtrer, rechercher et trier un tableau d'objets</td></tr>
+                    <tr><td><strong>09</strong></td><td>Sauvegarder avec <code>localStorage</code> et <code>JSON</code></td></tr>
+                    <tr><td><strong>10</strong></td><td>Charger des données avec <code>fetch</code>, <code>async</code> / <code>await</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="home-section">
+              <span class="eyebrow">Liens utiles</span>
+              <h2>Ressources recommandées</h2>
+              <div class="resources-grid">
+                <a class="resource-card" href="https://developer.mozilla.org/fr/docs/Web/API/Document_Object_Model/Introduction" target="_blank">
+                  <strong>MDN · Introduction au DOM</strong>
+                  <span>La référence pour chaque méthode et propriété</span>
+                </a>
+                <a class="resource-card" href="https://javascript.info/document" target="_blank">
+                  <strong>javascript.info · Document</strong>
+                  <span>Le DOM expliqué pas à pas, avec exercices</span>
+                </a>
+                <a class="resource-card" href="https://developer.mozilla.org/fr/docs/Web/API/Fetch_API/Using_Fetch" target="_blank">
+                  <strong>MDN · Utiliser fetch</strong>
+                  <span>Charger des données depuis un fichier ou une API</span>
+                </a>
+                <a class="resource-card" href="https://developer.chrome.com/docs/devtools/dom" target="_blank">
+                  <strong>Chrome DevTools · DOM</strong>
+                  <span>Inspecter et modifier la page dans le navigateur</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lesson-view" id="lesson-view" hidden aria-labelledby="reader-title">
+          <button class="back-button" id="close-reader" type="button">← Retour au parcours</button>
+          <div class="reader-head"><span class="eyebrow" id="reader-step"></span><h2 id="reader-title"></h2><p id="reader-description"></p></div>
+          <div class="lesson-layout">
+            <div class="reader-body" id="reader-body"><div class="loader">Chargement de la fiche<span>...</span></div></div>
+
+            <aside class="sandbox" id="sandbox" hidden aria-label="Bac à sable">
+              <div class="sb-head">
+                <span class="eyebrow">Bac à sable</span>
+                <strong id="sb-title">Choisis un challenge</strong>
+              </div>
+
+              <div class="sb-panel">
+                <div class="sb-bar">
+                  <div class="sb-tabs" role="tablist">
+                    <button class="sb-tab active" type="button" data-tab="preview">Aperçu</button>
+                    <button class="sb-tab" type="button" data-tab="html">HTML</button>
+                  </div>
+                </div>
+                <iframe id="sb-frame" class="sb-frame" title="Aperçu de la page"></iframe>
+                <pre class="sb-html" id="sb-html" hidden><code></code></pre>
+              </div>
+
+              <div class="sb-panel sb-editor">
+                <div class="sb-bar"><span>script.js</span><span class="sb-hint">Ctrl + Entrée pour exécuter</span></div>
+                <textarea id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Ton code JavaScript"></textarea>
+              </div>
+
+              <div class="sb-actions">
+                <button class="sb-btn sb-run" id="sb-run" type="button">▶ Exécuter</button>
+                <button class="sb-btn sb-verify" id="sb-verify" type="button">✓ Vérifier</button>
+                <button class="sb-btn sb-ghost" id="sb-import" type="button" title="Copier ici le code du challenge précédent">↳ Reprendre le précédent</button>
+                <button class="sb-btn sb-ghost" id="sb-reset" type="button">Réinitialiser</button>
+              </div>
+
+              <div class="sb-result" id="sb-result" hidden></div>
+
+              <div class="sb-panel">
+                <div class="sb-bar"><span>Console</span><button class="sb-link" id="sb-clear" type="button">Effacer</button></div>
+                <div class="sb-log" id="sb-log"></div>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="solution-modal" hidden>
+    <div class="modal-content">
+      <button class="modal-close" id="close-modal" type="button" aria-label="Fermer">×</button>
+      <div class="modal-header">
+        <span class="eyebrow">Solution Guidée</span>
+        <h2>Étapes de résolution</h2>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+# Sélectionner des éléments
+
+Avant de modifier une page, il faut **trouver** l'élément à modifier. Le navigateur transforme le HTML en un arbre d'objets : le **DOM**. L'objet `document` est la racine de cet arbre.
+
+## La notion
+
+### Les méthodes de sélection
+
+```javascript
+// Par id : un seul élément (ou null)
+const titre = document.getElementById("titre");
+
+// Par sélecteur CSS : le PREMIER élément qui correspond (ou null)
+const premierLivre = document.querySelector(".livre");
+const lienActif = document.querySelector("nav a.actif");
+
+// Par sélecteur CSS : TOUS les éléments (une NodeList)
+const livres = document.querySelectorAll(".livre");
+console.log(livres.length); // nombre d'éléments trouvés
+console.log(livres[0]);     // le premier, comme dans un tableau
+```
+
+### Lire le texte d'un élément
+
+```javascript
+console.log(titre.textContent);
+```
+
+### Parcourir une NodeList
+
+```javascript
+livres.forEach(livre => {
+  console.log(livre.textContent);
+});
+```
+
+> **Astuce :** ouvre l'onglet **HTML** du bac à sable pour voir les id et les classes de la page. Les sélecteurs de `querySelector` sont les mêmes qu'en CSS : `#id`, `.classe`, `balise`, `parent enfant`.
+
+### Challenge 1 : Le titre de la page
+
+Affiche dans la console le texte du titre de la page (l'élément qui a l'id `titre`).
+
+<!-- check
+if (!logged("Bibliothèque du quartier")) return "La console doit afficher le texte du titre : sélectionne #titre puis utilise textContent.";
+return true;
+-->
+
+<solution>
+### Étapes de résolution
+
+1.  **Sélection** : `document.getElementById("titre")` retourne l'élément.
+2.  **Lecture** : la propriété `textContent` contient son texte.
+3.  **Affichage** : `console.log()`.
+
+**Code :**
+```javascript
+const titre = document.getElementById("titre");
+console.log(titre.textContent);
+```
+</solution>
+
+### Challenge 2 : Compter les livres
+
+Affiche dans la console le **nombre** de livres de la liste (les éléments qui ont la classe `livre`).
+
+<!-- check
+if (!logs().some(line => /(^|[\s:=])4$/.test(line.trim()))) return "La console doit afficher le nombre 4 : utilise querySelectorAll puis length.";
+return true;
+-->
+
+<solution>
+### Étapes de résolution
+
+1.  **Sélection multiple** : `querySelectorAll(".livre")` retourne une NodeList.
+2.  **Taille** : une NodeList a une propriété `length`, comme un tableau.
+
+**Code :**
+```javascript
+const livres = document.querySelectorAll(".livre");
+console.log(livres.length);
+```
+</solution>
+
+### Challenge 3 : Le troisième livre
+
+Affiche dans la console le texte du **troisième** livre de la liste.
+
+<!-- check
+if (!logged("L'Étranger")) return "La console doit afficher « L'Étranger ». Attention : le premier élément est à l'index 0.";
+return true;
+-->
+
+<solution>
+### Étapes de résolution
+
+1.  **Sélection** : récupère tous les livres.
+2.  **Index** : le troisième élément est à l'index `2` (on commence à `0`).
+
+**Code :**
+```javascript
+const livres = document.querySelectorAll(".livre");
+console.log(livres[2].textContent);
+
+// Autre méthode avec un sélecteur CSS :
+// console.log(document.querySelector(".livre:nth-child(3)").textContent);
+```
+</solution>
+
+### Challenge 4 : Le lien actif
+
+Dans le menu, un seul lien a la classe `actif`. Affiche son texte dans la console.
+
+<!-- check
+if (!logs().some(line => line.trim() === "Contact" || line.includes("Contact"))) return "La console doit afficher le texte du lien qui a la classe actif.";
+return true;
+-->
+
+<solution>
+### Étapes de résolution
+
+1.  **Sélecteur combiné** : `a.actif` veut dire « une balise `a` qui a la classe `actif` ».
+2.  **Lecture** : `textContent`.
+
+**Code :**
+```javascript
+const lienActif = document.querySelector("a.actif");
+console.log(lienActif.textContent);
+```
+</solution>
+
+### Challenge 5 : Tous les livres
+
+Affiche dans la console le texte de **chaque** livre, un par ligne, avec une boucle.
+
+<!-- check
+const titres = ["Le Petit Prince", "Astérix le Gaulois", "L'Étranger", "Une brève histoire du temps"];
+const manque = titres.find(t => !logs().some(line => line.trim() === t));
+if (manque) return `Il manque « ${manque} » dans la console (un console.log par livre).`;
+return true;
+-->
+
+<solution>
+### Étapes de résolution
+
+1.  **Sélection** : `querySelectorAll(".livre")`.
+2.  **Boucle** : `forEach` parcourt chaque élément de la NodeList.
+3.  **Affichage** : un `console.log` par livre.
+
+**Code :**
+```javascript
+const livres = document.querySelectorAll(".livre");
+
+livres.forEach(livre => {
+  console.log(livre.textContent);
+});
+
+// Autre méthode :
+// for (const livre of livres) {
+//   console.log(livre.textContent);
+// }
+```
+</solution>

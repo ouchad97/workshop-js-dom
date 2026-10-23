@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Catalogue</title>
+  <style>
+    body { margin: 0; padding: 16px 20px; color: #23302e; background: #f5f7f6; font-family: "Segoe UI", sans-serif; }
+    .outils { display: flex; flex-wrap: wrap; gap: 8px; }
+    input, select, button { padding: 7px 10px; font: inherit; font-size: 13px; border: 1px solid #b9c7c2; border-radius: 6px; }
+    button { color: white; background: #1d6b59; border: 0; cursor: pointer; }
+    #stats { color: #6e7e79; font-size: 13px; }
+    #grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+    .carte { padding: 10px 12px; background: white; border: 1px solid #dfe7e4; border-radius: 10px; }
+    .carte h3 { margin: 0 0 6px; font-size: 14px; }
+    .carte .prix { margin: 0; color: #1d6b59; font-weight: 700; }
+    .carte.rupture { opacity: .55; }
+    .carte.rupture::after { content: "Rupture"; display: inline-block; margin-top: 6px; padding: 1px 8px; color: white; background: #c0392b; border-radius: 99px; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="outils">
+    <input id="recherche" type="text" placeholder="Rechercher un produit">
+    <select id="categorie">
+      <option value="tous">Toutes les catégories</option>
+      <option value="informatique">Informatique</option>
+      <option value="audio">Audio</option>
+      <option value="maison">Maison</option>
+    </select>
+    <button id="trier">Trier par prix</button>
+  </div>
+  <p id="stats"></p>
+  <div id="grille"></div>
+
+  <script>
+    const produits = [
+      { id: 1, nom: "Clavier mécanique", categorie: "informatique", prix: 450, stock: 12 },
+      { id: 2, nom: "Souris sans fil", categorie: "informatique", prix: 120, stock: 0 },
+      { id: 3, nom: "Casque audio", categorie: "audio", prix: 300, stock: 5 },
+      { id: 4, nom: "Enceinte Bluetooth", categorie: "audio", prix: 250, stock: 8 },
+      { id: 5, nom: "Écran 24 pouces", categorie: "informatique", prix: 1200, stock: 3 },
+      { id: 6, nom: "Micro USB", categorie: "audio", prix: 380, stock: 0 },
+      { id: 7, nom: "Lampe de bureau", categorie: "maison", prix: 90, stock: 20 },
+      { id: 8, nom: "Chaise ergonomique", categorie: "maison", prix: 1500, stock: 2 }
+    ];
+  </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mes notes</title>
+  <style>
+    body { margin: 0; padding: 18px 24px; color: #23302e; background: #fdfbf5; font-family: "Segoe UI", sans-serif; transition: background .3s, color .3s; }
+    body.sombre { color: #eef3f1; background: #16201f; }
+    .barre { display: flex; align-items: center; justify-content: space-between; }
+    input, button { padding: 7px 10px; font: inherit; font-size: 13px; border: 1px solid #c9c2ad; border-radius: 6px; }
+    button { color: white; background: #1d6b59; border: 0; cursor: pointer; }
+    #vider { background: #c0392b; }
+    #form-note { display: flex; gap: 6px; margin: 12px 0; }
+    #notes { padding-left: 20px; line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <div class="barre">
+    <p>Visites : <strong id="visites">0</strong></p>
+    <button id="mode">Changer de mode</button>
+  </div>
+
+  <form id="form-note">
+    <input id="note" type="text" placeholder="Nouvelle note">
+    <button type="submit">Ajouter</button>
+  </form>
+  <ul id="notes"></ul>
+  <button id="vider">Tout effacer</button>
+</body>
+</html>

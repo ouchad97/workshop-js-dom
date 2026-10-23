@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Escalier DOM Challenge</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 18px; background: linear-gradient(to bottom, #f0f0f0, #d9d9d9); font-family: "Segoe UI", sans-serif; }
+    .staircase { display: flex; flex-direction: row; align-items: flex-end; justify-content: center; gap: 4px; padding-top: 140px; transition: all .3s ease; }
+    .step { position: relative; display: flex; justify-content: center; align-items: center; width: 60px; height: 34px; color: white; font-weight: bold; background: #6c757d; border: 2px solid #444; border-radius: 6px; transition: all .3s; }
+    .step:nth-child(odd) { background: #5a6268; }
+    .step:nth-child(2) { transform: translateY(-22px); }
+    .step:nth-child(3) { transform: translateY(-44px); }
+    .step:nth-child(4) { transform: translateY(-66px); }
+    .step:nth-child(5) { transform: translateY(-88px); }
+    .step:nth-child(6) { transform: translateY(-110px); }
+    .step:nth-child(7) { transform: translateY(-132px); }
+    .step:nth-child(8) { transform: translateY(-154px); }
+    .step:nth-child(9) { transform: translateY(-176px); }
+    .step:nth-child(10) { transform: translateY(-198px); }
+    .active { background: #ef8354 !important; border-color: #b85a30; }
+    .controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    button, input { padding: 7px 12px; font: inherit; border: 1px solid #888; border-radius: 6px; }
+    button { color: white; background: #1d6b59; border: 0; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="staircase" id="staircase">
+    <div class="step" id="step1">1</div>
+    <div class="step" id="step2">2</div>
+    <div class="step" id="step3">3</div>
+    <div class="step" id="step4">4</div>
+    <div class="step" id="step5">5</div>
+  </div>
+
+  <div class="controls" id="controls"></div>
+</body>
+</html>

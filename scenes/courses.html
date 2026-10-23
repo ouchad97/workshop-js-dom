@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Liste de courses</title>
+  <style>
+    body { margin: 0; padding: 20px 26px; color: #23302e; background: #fffaf3; font-family: "Segoe UI", sans-serif; }
+    h1 { margin: 0 0 8px; font-size: 22px; }
+    #liste { padding-left: 20px; line-height: 1.9; }
+    .article::marker { color: #ef8354; }
+    #cartes { display: flex; flex-wrap: wrap; gap: 10px; }
+    .carte-produit { width: 120px; padding: 10px 14px; background: white; border: 1px solid #eadfcd; border-radius: 10px; }
+    .carte-produit h3 { margin: 0 0 4px; font-size: 15px; }
+    .prix { margin: 0; color: #1d6b59; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Liste de courses</h1>
+  <ul id="liste">
+    <li class="article">Pain</li>
+    <li class="article">Lait</li>
+    <li class="article">Œufs</li>
+  </ul>
+
+  <div id="cartes">
+    <div class="carte-produit">
+      <h3>Pomme</h3>
+      <p class="prix">2 DH</p>
+    </div>
+  </div>
+</body>
+</html>

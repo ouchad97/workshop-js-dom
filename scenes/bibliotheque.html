@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Bibliothèque</title>
+  <style>
+    body { margin: 0; padding: 20px 26px; color: #23302e; background: #fbf8f1; font-family: Georgia, serif; }
+    header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px; border-bottom: 2px solid #23302e; }
+    h1 { margin: 0 0 10px; font-size: 24px; }
+    nav a { margin-left: 12px; color: #7a5c2e; font-family: sans-serif; font-size: 13px; }
+    nav a.actif { font-weight: bold; text-decoration: none; border-bottom: 2px solid #ef8354; }
+    .intro { font-style: italic; }
+    #livres { padding-left: 18px; line-height: 1.9; }
+    .nouveau::after { content: " · nouveau"; color: #ef8354; font-family: sans-serif; font-size: 11px; }
+    .horaires { color: #6e7e79; font-family: sans-serif; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header id="entete">
+    <h1 id="titre">Bibliothèque du quartier</h1>
+    <nav>
+      <a href="#accueil" class="lien">Accueil</a>
+      <a href="#livres" class="lien">Livres</a>
+      <a href="#contact" class="lien actif">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <p class="intro">Bienvenue ! Voici nos livres du moment.</p>
+    <ul id="livres">
+      <li class="livre" data-genre="roman">Le Petit Prince</li>
+      <li class="livre" data-genre="bd">Astérix le Gaulois</li>
+      <li class="livre" data-genre="roman">L'Étranger</li>
+      <li class="livre nouveau" data-genre="science">Une brève histoire du temps</li>
+    </ul>
+    <p class="horaires">Ouvert du lundi au samedi, de 9h à 18h.</p>
+  </main>
+</body>
+</html>

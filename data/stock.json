@@ -1,0 +1,14 @@
+[
+  { "id": 1, "nom": "Clavier mécanique", "categorie": "informatique", "prix": 450, "stock": 12 },
+  { "id": 2, "nom": "Souris sans fil", "categorie": "informatique", "prix": 120, "stock": 0 },
+  { "id": 3, "nom": "Casque audio", "categorie": "audio", "prix": 300, "stock": 5 },
+  { "id": 4, "nom": "Enceinte Bluetooth", "categorie": "audio", "prix": 250, "stock": 8 },
+  { "id": 5, "nom": "Écran 24 pouces", "categorie": "informatique", "prix": 1200, "stock": 3 },
+  { "id": 6, "nom": "Micro USB", "categorie": "audio", "prix": 380, "stock": 0 },
+  { "id": 7, "nom": "Lampe de bureau", "categorie": "maison", "prix": 90, "stock": 20 },
+  { "id": 8, "nom": "Chaise ergonomique", "categorie": "maison", "prix": 1500, "stock": 2 },
+  { "id": 9, "nom": "Webcam HD", "categorie": "informatique", "prix": 350, "stock": 4 },
+  { "id": 10, "nom": "Tapis de souris", "categorie": "informatique", "prix": 60, "stock": 0 },
+  { "id": 11, "nom": "Bouilloire", "categorie": "maison", "prix": 200, "stock": 7 },
+  { "id": 12, "nom": "Écouteurs", "categorie": "audio", "prix": 150, "stock": 15 }
+]

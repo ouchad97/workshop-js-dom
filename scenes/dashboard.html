@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard stock</title>
+  <style>
+    body { margin: 0; padding: 16px 20px; color: #23302e; background: #f4f6f5; font-family: "Segoe UI", sans-serif; font-size: 13px; }
+    h1 { margin: 0 0 10px; font-size: 20px; }
+    .cartes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat { padding: 10px 12px; background: white; border-radius: 10px; }
+    .stat span { display: block; color: #6e7e79; font-size: 11px; }
+    .stat strong { font-size: 18px; }
+    .outils { margin: 12px 0 8px; }
+    select { padding: 6px 9px; font: inherit; border: 1px solid #b9c7c2; border-radius: 6px; }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
+    th, td { padding: 7px 10px; text-align: left; border-bottom: 1px solid #e6ecea; }
+    th { color: white; background: #1d6b59; cursor: pointer; user-select: none; }
+    tr.alerte td { color: #c0392b; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Stock du magasin</h1>
+  <div class="cartes">
+    <div class="stat"><span>Produits</span><strong id="nb-produits">–</strong></div>
+    <div class="stat"><span>En rupture</span><strong id="nb-rupture">–</strong></div>
+    <div class="stat"><span>Valeur du stock</span><strong id="valeur-stock">–</strong></div>
+  </div>
+
+  <div class="outils">
+    <select id="categorie">
+      <option value="tous">Toutes les catégories</option>
+    </select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th data-tri="nom">Nom</th>
+        <th data-tri="categorie">Catégorie</th>
+        <th data-tri="prix">Prix</th>
+        <th data-tri="stock">Stock</th>
+      </tr>
+    </thead>
+    <tbody id="corps"></tbody>
+  </table>
+</body>
+</html>

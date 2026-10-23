@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Inscription</title>
+  <style>
+    body { margin: 0; padding: 18px 26px; color: #23302e; background: #f3f6fb; font-family: "Segoe UI", sans-serif; }
+    form { display: grid; gap: 8px; max-width: 360px; }
+    label { display: grid; gap: 3px; font-size: 13px; font-weight: 600; }
+    label.check { display: flex; align-items: center; gap: 6px; font-weight: 400; }
+    input[type="text"], input[type="email"], textarea { padding: 7px 9px; font: inherit; border: 1px solid #b9c4d4; border-radius: 6px; }
+    textarea { min-height: 50px; resize: vertical; }
+    #compteur { color: #6e7e79; text-align: right; }
+    .erreur { min-height: 18px; margin: 0; color: #c0392b; font-size: 13px; }
+    button { padding: 9px; color: white; background: #1d6b59; border: 0; border-radius: 6px; font: inherit; font-weight: 700; cursor: pointer; }
+    button:disabled { background: #a8b5b1; cursor: not-allowed; }
+    #resultat { font-weight: 700; color: #1d6b59; }
+  </style>
+</head>
+<body>
+  <form id="inscription" novalidate>
+    <label>Nom <input id="nom" name="nom" type="text"></label>
+    <label>Email <input id="email" name="email" type="email"></label>
+    <label>Message <textarea id="message" name="message" maxlength="100"></textarea></label>
+    <small id="compteur">0 / 100</small>
+    <label class="check"><input id="cgu" type="checkbox"> J'accepte le règlement</label>
+    <p id="erreur" class="erreur"></p>
+    <button id="envoyer" type="submit">Envoyer</button>
+  </form>
+  <p id="resultat"></p>
+</body>
+</html>

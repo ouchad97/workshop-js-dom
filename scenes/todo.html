@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Todo</title>
+  <style>
+    body { margin: 0; padding: 18px 24px; color: #23302e; background: #f7f4fb; font-family: "Segoe UI", sans-serif; }
+    h1 { margin: 0 0 10px; font-size: 22px; }
+    #form { display: flex; gap: 6px; max-width: 380px; }
+    #saisie { flex: 1; }
+    input, button { padding: 7px 10px; font: inherit; font-size: 13px; border: 1px solid #cbc0dd; border-radius: 6px; }
+    button { color: white; background: #6b4fa0; border: 0; cursor: pointer; }
+    .filtres { display: flex; gap: 6px; margin: 12px 0; }
+    .filtres button { color: #6b4fa0; background: white; border: 1px solid #cbc0dd; }
+    .filtres button.actif { color: white; background: #6b4fa0; }
+    #liste { display: grid; gap: 6px; max-width: 380px; padding: 0; list-style: none; }
+    .tache { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: white; border-radius: 8px; cursor: pointer; }
+    .tache.fait .texte { color: #999; text-decoration: line-through; }
+    .tache .supprimer { color: #c0392b; background: none; border: 0; font-size: 15px; }
+    #compteur { color: #6e7e79; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>Ma todo list</h1>
+  <form id="form">
+    <input id="saisie" type="text" placeholder="Que dois-tu faire ?">
+    <button type="submit">Ajouter</button>
+  </form>
+
+  <div class="filtres">
+    <button type="button" data-filtre="toutes" class="actif">Toutes</button>
+    <button type="button" data-filtre="actives">Actives</button>
+    <button type="button" data-filtre="faites">Faites</button>
+  </div>
+
+  <ul id="liste"></ul>
+  <p id="compteur"></p>
+</body>
+</html>

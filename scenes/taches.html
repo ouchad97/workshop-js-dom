@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mes tâches</title>
+  <style>
+    body { margin: 0; padding: 20px 26px; color: #23302e; background: #f7f4fb; font-family: "Segoe UI", sans-serif; }
+    h1 { margin: 0 0 10px; font-size: 22px; }
+    #taches { display: grid; gap: 6px; max-width: 360px; padding: 0; list-style: none; }
+    .tache { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: white; border-radius: 8px; cursor: pointer; }
+    .tache.fait .texte { color: #999; text-decoration: line-through; }
+    .supprimer { color: #c0392b; background: none; border: 0; font-size: 15px; cursor: pointer; }
+    #ajouter { padding: 8px 14px; color: white; background: #6b4fa0; border: 0; border-radius: 6px; cursor: pointer; }
+    #restantes { color: #6e7e79; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>Mes tâches</h1>
+  <ul id="taches">
+    <li class="tache"><span class="texte">Réviser le DOM</span><button class="supprimer">✕</button></li>
+    <li class="tache"><span class="texte">Faire les challenges</span><button class="supprimer">✕</button></li>
+    <li class="tache"><span class="texte">Pousser sur GitHub</span><button class="supprimer">✕</button></li>
+  </ul>
+  <p id="restantes"></p>
+  <button id="ajouter">Ajouter une tâche</button>
+</body>
+</html>
