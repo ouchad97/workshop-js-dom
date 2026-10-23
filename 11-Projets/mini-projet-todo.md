@@ -106,35 +106,6 @@ if (restent.join(",") !== "Tâche B") return "Un clic sur ✕ doit supprimer sa 
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Délégation** sur `#liste`.
-2.  **Retrouver la tâche** dans le tableau grâce à `li.dataset.id`.
-3.  **Supprimer** : garder toutes les tâches sauf celle-ci (`filter`).
-4.  **Cocher** : inverser `todo.fait`. Dans `afficher()`, ajouter la classe `fait` si `todo.fait` est vrai.
-
-**Code :**
-```javascript
-// Dans afficher(), après li.classList.add("tache") :
-// if (todo.fait) li.classList.add("fait");
-
-liste.addEventListener("click", event => {
-  const li = event.target.closest(".tache");
-  if (!li) return;
-  const id = li.dataset.id;
-
-  if (event.target.matches(".supprimer")) {
-    todos = todos.filter(todo => todo.id !== id);
-  } else {
-    const todo = todos.find(todo => todo.id === id);
-    todo.fait = !todo.fait;
-  }
-  afficher();
-});
-```
-</solution>
-
 ### Étape 3 : Tâches restantes
 
 `#compteur` affiche le nombre de tâches **non faites**, par exemple `2 tâche(s) restante(s)`, et se met à jour après chaque action.
@@ -152,22 +123,6 @@ await click($$("#liste .supprimer")[1]);
 if (nombre() !== "0") return "Après avoir supprimé la tâche restante, #compteur doit afficher 0.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Compter** avec `filter(todo => !todo.fait).length`.
-2.  **Où ?** À la fin de `afficher()` : comme toutes les actions appellent `afficher()`, le compteur est toujours à jour.
-
-**Code :**
-```javascript
-const compteur = document.querySelector("#compteur");
-
-// À la fin de afficher() :
-const restantes = todos.filter(todo => !todo.fait).length;
-compteur.textContent = `${restantes} tâche(s) restante(s)`;
-```
-</solution>
 
 ### Étape 4 : Les filtres
 
@@ -187,36 +142,6 @@ await click('[data-filtre="toutes"]');
 if (visibles().length !== 3) return "Avec le filtre toutes, les 3 tâches doivent être visibles.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **État** : une variable `filtre` (`"toutes"` au départ).
-2.  **Boutons** : au clic, changer `filtre`, mettre à jour la classe `actif`, puis `afficher()`.
-3.  **afficher()** : boucler sur une liste filtrée au lieu de `todos`.
-
-**Code :**
-```javascript
-let filtre = "toutes";
-const boutonsFiltre = document.querySelectorAll("[data-filtre]");
-
-boutonsFiltre.forEach(bouton => {
-  bouton.addEventListener("click", () => {
-    filtre = bouton.dataset.filtre;
-    boutonsFiltre.forEach(b => b.classList.toggle("actif", b === bouton));
-    afficher();
-  });
-});
-
-// Dans afficher() :
-const visibles = todos.filter(todo => {
-  if (filtre === "actives") return !todo.fait;
-  if (filtre === "faites") return todo.fait;
-  return true;
-});
-// puis visibles.forEach(...) au lieu de todos.forEach(...)
-```
-</solution>
 
 ### Étape 5 : Sauvegarder
 
@@ -241,92 +166,3 @@ if ($$("#liste .tache").length !== 1) return "Une tâche supprimée ne doit pas 
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Charger** au démarrage : `JSON.parse(localStorage.getItem("todos")) || []`.
-2.  **Sauvegarder** après chaque modification du tableau.
-3.  **Afficher** une première fois au chargement.
-
-**Code complet :**
-```javascript
-const form = document.querySelector("#form");
-const saisie = document.querySelector("#saisie");
-const liste = document.querySelector("#liste");
-const compteur = document.querySelector("#compteur");
-const boutonsFiltre = document.querySelectorAll("[data-filtre]");
-
-let todos = JSON.parse(localStorage.getItem("todos")) || [];
-let filtre = "toutes";
-
-function sauvegarder() {
-  localStorage.setItem("todos", JSON.stringify(todos));
-}
-
-function afficher() {
-  liste.innerHTML = "";
-  const visibles = todos.filter(todo => {
-    if (filtre === "actives") return !todo.fait;
-    if (filtre === "faites") return todo.fait;
-    return true;
-  });
-
-  visibles.forEach(todo => {
-    const li = document.createElement("li");
-    li.classList.add("tache");
-    if (todo.fait) li.classList.add("fait");
-    li.dataset.id = todo.id;
-
-    const texte = document.createElement("span");
-    texte.classList.add("texte");
-    texte.textContent = todo.texte;
-
-    const bouton = document.createElement("button");
-    bouton.classList.add("supprimer");
-    bouton.textContent = "✕";
-
-    li.append(texte, bouton);
-    liste.append(li);
-  });
-
-  const restantes = todos.filter(todo => !todo.fait).length;
-  compteur.textContent = `${restantes} tâche(s) restante(s)`;
-}
-
-form.addEventListener("submit", event => {
-  event.preventDefault();
-  const texte = saisie.value.trim();
-  if (texte === "") return;
-
-  todos.push({ id: String(Date.now()) + todos.length, texte, fait: false });
-  saisie.value = "";
-  sauvegarder();
-  afficher();
-});
-
-liste.addEventListener("click", event => {
-  const li = event.target.closest(".tache");
-  if (!li) return;
-  const id = li.dataset.id;
-
-  if (event.target.matches(".supprimer")) {
-    todos = todos.filter(todo => todo.id !== id);
-  } else {
-    const todo = todos.find(todo => todo.id === id);
-    todo.fait = !todo.fait;
-  }
-  sauvegarder();
-  afficher();
-});
-
-boutonsFiltre.forEach(bouton => {
-  bouton.addEventListener("click", () => {
-    filtre = bouton.dataset.filtre;
-    boutonsFiltre.forEach(b => b.classList.toggle("actif", b === bouton));
-    afficher();
-  });
-});
-
-afficher();
-```
-</solution>

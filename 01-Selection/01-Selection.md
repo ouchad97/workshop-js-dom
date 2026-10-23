@@ -68,19 +68,6 @@ if (!logs().some(line => /(^|[\s:=])4$/.test(line.trim()))) return "La console d
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Sélection multiple** : `querySelectorAll(".livre")` retourne une NodeList.
-2.  **Taille** : une NodeList a une propriété `length`, comme un tableau.
-
-**Code :**
-```javascript
-const livres = document.querySelectorAll(".livre");
-console.log(livres.length);
-```
-</solution>
-
 ### Challenge 3 : Le troisième livre
 
 Affiche dans la console le texte du **troisième** livre de la liste.
@@ -90,22 +77,6 @@ if (!logged("L'Étranger")) return "La console doit afficher « L'Étranger ». 
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Sélection** : récupère tous les livres.
-2.  **Index** : le troisième élément est à l'index `2` (on commence à `0`).
-
-**Code :**
-```javascript
-const livres = document.querySelectorAll(".livre");
-console.log(livres[2].textContent);
-
-// Autre méthode avec un sélecteur CSS :
-// console.log(document.querySelector(".livre:nth-child(3)").textContent);
-```
-</solution>
-
 ### Challenge 4 : Le lien actif
 
 Dans le menu, un seul lien a la classe `actif`. Affiche son texte dans la console.
@@ -114,19 +85,6 @@ Dans le menu, un seul lien a la classe `actif`. Affiche son texte dans la consol
 if (!logs().some(line => line.trim() === "Contact" || line.includes("Contact"))) return "La console doit afficher le texte du lien qui a la classe actif.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Sélecteur combiné** : `a.actif` veut dire « une balise `a` qui a la classe `actif` ».
-2.  **Lecture** : `textContent`.
-
-**Code :**
-```javascript
-const lienActif = document.querySelector("a.actif");
-console.log(lienActif.textContent);
-```
-</solution>
 
 ### Challenge 5 : Tous les livres
 
@@ -139,24 +97,3 @@ if (manque) return `Il manque « ${manque} » dans la console (un console.log pa
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Sélection** : `querySelectorAll(".livre")`.
-2.  **Boucle** : `forEach` parcourt chaque élément de la NodeList.
-3.  **Affichage** : un `console.log` par livre.
-
-**Code :**
-```javascript
-const livres = document.querySelectorAll(".livre");
-
-livres.forEach(livre => {
-  console.log(livre.textContent);
-});
-
-// Autre méthode :
-// for (const livre of livres) {
-//   console.log(livre.textContent);
-// }
-```
-</solution>

@@ -73,24 +73,6 @@ if (petite) return `La marche ${petite.textContent} n'a pas été agrandie : cha
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Sélection multiple** : `querySelectorAll(".step")`.
-2.  **Boucle** : `forEach` sur chaque marche.
-3.  **Style** : modifier `width` et `height` (avec l'unité `px`).
-
-**Code :**
-```javascript
-const marches = document.querySelectorAll(".step");
-
-marches.forEach(marche => {
-  marche.style.width = "80px";
-  marche.style.height = "45px";
-});
-```
-</solution>
-
 ### Challenge 3 : Les marches impaires
 
 Change uniquement la couleur des marches impaires : les marches **1, 3 et 5**.
@@ -102,27 +84,6 @@ if (impaires.some(i => css(steps[i], "backgroundColor") === "rgb(90, 98, 104)"))
 if (paires.some(i => css(steps[i], "backgroundColor") !== "rgb(108, 117, 125)")) return "Les marches 2 et 4 ne doivent pas changer.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Boucle avec index** : `forEach((marche, index) => ...)`.
-2.  **Condition** : la marche 1 est à l'index 0, la marche 3 à l'index 2… donc les index **pairs** (`index % 2 === 0`).
-
-**Code :**
-```javascript
-const marches = document.querySelectorAll(".step");
-
-marches.forEach((marche, index) => {
-  if (index % 2 === 0) {
-    marche.style.backgroundColor = "teal";
-  }
-});
-
-// Autre méthode avec un sélecteur CSS :
-// document.querySelectorAll(".step:nth-child(odd)")
-```
-</solution>
 
 ### Challenge 4 : Un texte sur la dernière marche
 
@@ -136,20 +97,6 @@ if (steps.slice(0, -1).some((s, i) => s.textContent.trim() !== String(i + 1))) r
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Sélection** : la dernière marche est à l'index `length - 1`, ou `#step5`.
-2.  **Texte** : modifier `textContent`.
-
-**Code :**
-```javascript
-const marches = document.querySelectorAll(".step");
-const derniere = marches[marches.length - 1];
-derniere.textContent = "Top !";
-```
-</solution>
-
 ### Challenge 5 : Une classe sur la troisième marche
 
 Ajoute une nouvelle classe à la **troisième** marche. Tu peux utiliser la classe `active` déjà prévue dans le CSS.
@@ -161,17 +108,3 @@ if ($$(".step").some((s, i) => i !== 2 && s.classList.length > 1)) return "Seule
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Sélection** : `#step3` ou l'index `2`.
-2.  **Classe** : `classList.add("active")` garde la classe `step` et ajoute `active`.
-
-**Code :**
-```javascript
-const troisieme = document.querySelector("#step3");
-troisieme.classList.add("active");
-```
-
-À éviter : `troisieme.className = "active"` remplace **toutes** les classes (la marche perd `step`).
-</solution>

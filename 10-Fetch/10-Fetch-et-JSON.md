@@ -95,32 +95,6 @@ if (!text(items[0]).includes("Salma Idrissi") || !text(items[0]).includes("Safi"
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Charger** les données comme au challenge 1.
-2.  **Boucle** : un `li` par membre, avec un template literal.
-3.  **Placer** dans `#annuaire`.
-
-**Code :**
-```javascript
-const annuaire = document.querySelector("#annuaire");
-
-async function charger() {
-  const reponse = await fetch("data/membres.json");
-  const membres = await reponse.json();
-
-  membres.forEach(membre => {
-    const li = document.createElement("li");
-    li.textContent = `${membre.nom} — ${membre.ville}`;
-    annuaire.append(li);
-  });
-}
-
-charger();
-```
-</solution>
-
 ### Challenge 3 : Message de chargement
 
 Reprends le challenge 2. Pendant le chargement, le paragraphe `#chargement` est **visible** (il a l'attribut `hidden` au départ). Quand les membres sont affichés, il est à nouveau caché.
@@ -132,37 +106,6 @@ if (!$("#chargement").hidden) return "Une fois les membres affichés, #chargemen
 if ($$("#annuaire li").length !== 10) return "Les 10 membres doivent être affichés dans #annuaire.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Avant** le `fetch` : `chargement.hidden = false`.
-2.  **Après** l'affichage : `chargement.hidden = true`.
-3.  **Pourquoi ça marche** : tout le code avant le premier `await` s'exécute tout de suite ; la suite attend la réponse.
-
-**Code :**
-```javascript
-const annuaire = document.querySelector("#annuaire");
-const chargement = document.querySelector("#chargement");
-
-async function charger() {
-  chargement.hidden = false;
-
-  const reponse = await fetch("data/membres.json");
-  const membres = await reponse.json();
-
-  membres.forEach(membre => {
-    const li = document.createElement("li");
-    li.textContent = `${membre.nom} — ${membre.ville}`;
-    annuaire.append(li);
-  });
-
-  chargement.hidden = true;
-}
-
-charger();
-```
-</solution>
 
 ### Challenge 4 : Gérer une erreur
 
@@ -178,47 +121,6 @@ if (!/impossible/i.test(text("#erreur"))) return "Avec une adresse qui n'existe 
 if (!$("#chargement").hidden) return "Après une erreur, #chargement doit être caché.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Paramètre** `url` au lieu d'une adresse écrite en dur.
-2.  **Tester** `reponse.ok` : une erreur 404 ne déclenche pas le `catch` toute seule, il faut lancer l'erreur avec `throw`.
-3.  **catch** : afficher le message.
-4.  **finally** : cacher le chargement dans tous les cas.
-
-**Code :**
-```javascript
-const annuaire = document.querySelector("#annuaire");
-const chargement = document.querySelector("#chargement");
-const erreur = document.querySelector("#erreur");
-
-async function charger(url) {
-  chargement.hidden = false;
-  erreur.textContent = "";
-
-  try {
-    const reponse = await fetch(url);
-    if (!reponse.ok) {
-      throw new Error("Erreur " + reponse.status);
-    }
-    const membres = await reponse.json();
-
-    membres.forEach(membre => {
-      const li = document.createElement("li");
-      li.textContent = `${membre.nom} — ${membre.ville}`;
-      annuaire.append(li);
-    });
-  } catch (e) {
-    erreur.textContent = "Impossible de charger les données";
-  } finally {
-    chargement.hidden = true;
-  }
-}
-
-charger("data/membres.json");
-```
-</solution>
 
 ### Challenge 5 : Filtrer par ville
 
@@ -237,42 +139,3 @@ if ($$("#annuaire li").length !== 10) return "Quand le filtre est vide, les 10 m
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Variable** `membres` déclarée en dehors de la fonction, remplie après le `fetch`.
-2.  **Fonction** `afficher(liste)` qui vide `#annuaire`, crée les `li` et met à jour `#total`.
-3.  **Filtre** : `filter` avec `toLowerCase().startsWith(...)`, puis `afficher`.
-4.  **Pas de nouveau fetch** : on filtre les données déjà chargées.
-
-**Code :**
-```javascript
-const annuaire = document.querySelector("#annuaire");
-const total = document.querySelector("#total");
-const filtre = document.querySelector("#filtre");
-let membres = [];
-
-function afficher(liste) {
-  annuaire.innerHTML = "";
-  liste.forEach(membre => {
-    const li = document.createElement("li");
-    li.textContent = `${membre.nom} — ${membre.ville}`;
-    annuaire.append(li);
-  });
-  total.textContent = `${liste.length} membre(s)`;
-}
-
-async function charger() {
-  const reponse = await fetch("data/membres.json");
-  membres = await reponse.json();
-  afficher(membres);
-}
-
-filtre.addEventListener("input", () => {
-  const texte = filtre.value.toLowerCase();
-  afficher(membres.filter(m => m.ville.toLowerCase().startsWith(texte)));
-});
-
-charger();
-```
-</solution>

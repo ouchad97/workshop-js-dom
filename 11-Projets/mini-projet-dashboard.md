@@ -91,20 +91,6 @@ if (alertes.join(",") !== "Chaise ergonomique,Micro USB,Souris sans fil,Tapis de
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Dans la boucle** d'affichage : une condition sur `p.stock`.
-
-**Code :**
-```javascript
-// Dans afficher(), après la création du tr :
-if (p.stock < 3) {
-  tr.classList.add("alerte");
-}
-```
-</solution>
-
 ### Étape 3 : Les statistiques
 
 Remplis les trois cartes : `#nb-produits` (nombre de produits), `#nb-rupture` (produits avec un stock de 0) et `#valeur-stock` (somme de `prix × stock`, en DH).
@@ -116,28 +102,6 @@ if (text("#nb-rupture") !== "3") return `#nb-rupture doit afficher 3 (il affiche
 if (text("#valeur-stock").replace(/\D/g, "") !== "22350") return `#valeur-stock doit afficher 22350 DH (il affiche « ${text("#valeur-stock")} »).`;
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Nombre** : `length`.
-2.  **Ruptures** : `filter(p => p.stock === 0).length`.
-3.  **Valeur** : `reduce` qui additionne `p.prix * p.stock`.
-4.  **Où ?** Dans `afficher()`, pour que les stats suivent la liste affichée (utile à l'étape 4).
-
-**Code :**
-```javascript
-function afficherStats(liste) {
-  document.querySelector("#nb-produits").textContent = liste.length;
-  document.querySelector("#nb-rupture").textContent = liste.filter(p => p.stock === 0).length;
-  const valeur = liste.reduce((total, p) => total + p.prix * p.stock, 0);
-  document.querySelector("#valeur-stock").textContent = `${valeur} DH`;
-}
-
-// À la fin de afficher() :
-afficherStats(produits);
-```
-</solution>
 
 ### Étape 4 : Filtrer par catégorie
 
@@ -155,40 +119,6 @@ await choose("#categorie", "tous");
 if ($$("#corps tr").length !== 12) return "Avec « tous », les 12 produits doivent revenir.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Catégories uniques** : `new Set(produits.map(p => p.categorie))` supprime les doublons.
-2.  **Options** : une `option` par catégorie, ajoutée au select.
-3.  **Liste affichée** : une fonction qui renvoie les produits filtrés selon `select.value`.
-4.  **afficher()** utilise cette liste pour le tableau **et** les stats.
-
-**Code :**
-```javascript
-const selectCategorie = document.querySelector("#categorie");
-
-function remplirCategories() {
-  const categories = [...new Set(produits.map(p => p.categorie))];
-  categories.forEach(categorie => {
-    const option = document.createElement("option");
-    option.value = categorie;
-    option.textContent = categorie;
-    selectCategorie.append(option);
-  });
-}
-
-function listeAffichee() {
-  const categorie = selectCategorie.value;
-  return categorie === "tous" ? produits : produits.filter(p => p.categorie === categorie);
-}
-
-selectCategorie.addEventListener("change", afficher);
-
-// Dans afficher() : const liste = listeAffichee(); puis liste.forEach(...) et afficherStats(liste)
-// Dans charger() : remplirCategories(); avant afficher();
-```
-</solution>
 
 ### Étape 5 : Trier les colonnes
 
@@ -212,85 +142,3 @@ if ($$("#corps tr").length !== 3) return "Le filtre par catégorie doit toujours
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **État du tri** : la colonne choisie et le sens (`croissant`).
-2.  **Clic** sur un `th` : même colonne → on inverse le sens ; nouvelle colonne → croissant.
-3.  **Comparer** : nombres avec `a - b`, textes avec `localeCompare`.
-4.  **Copie** avant de trier : `[...liste].sort(...)`.
-
-**Code complet :**
-```javascript
-const corps = document.querySelector("#corps");
-const selectCategorie = document.querySelector("#categorie");
-let produits = [];
-const tri = { colonne: null, croissant: true };
-
-function listeAffichee() {
-  const categorie = selectCategorie.value;
-  const filtres = categorie === "tous" ? produits : produits.filter(p => p.categorie === categorie);
-  if (!tri.colonne) return filtres;
-
-  return [...filtres].sort((a, b) => {
-    const x = a[tri.colonne];
-    const y = b[tri.colonne];
-    const ordre = typeof x === "number" ? x - y : x.localeCompare(y, "fr");
-    return tri.croissant ? ordre : -ordre;
-  });
-}
-
-function afficherStats(liste) {
-  document.querySelector("#nb-produits").textContent = liste.length;
-  document.querySelector("#nb-rupture").textContent = liste.filter(p => p.stock === 0).length;
-  const valeur = liste.reduce((total, p) => total + p.prix * p.stock, 0);
-  document.querySelector("#valeur-stock").textContent = `${valeur} DH`;
-}
-
-function afficher() {
-  const liste = listeAffichee();
-  corps.innerHTML = "";
-  liste.forEach(p => {
-    const tr = document.createElement("tr");
-    if (p.stock < 3) tr.classList.add("alerte");
-    [p.nom, p.categorie, `${p.prix} DH`, p.stock].forEach(valeur => {
-      const td = document.createElement("td");
-      td.textContent = valeur;
-      tr.append(td);
-    });
-    corps.append(tr);
-  });
-  afficherStats(liste);
-}
-
-function remplirCategories() {
-  const categories = [...new Set(produits.map(p => p.categorie))];
-  categories.forEach(categorie => {
-    const option = document.createElement("option");
-    option.value = categorie;
-    option.textContent = categorie;
-    selectCategorie.append(option);
-  });
-}
-
-selectCategorie.addEventListener("change", afficher);
-
-document.querySelectorAll("th[data-tri]").forEach(th => {
-  th.addEventListener("click", () => {
-    const colonne = th.dataset.tri;
-    tri.croissant = tri.colonne === colonne ? !tri.croissant : true;
-    tri.colonne = colonne;
-    afficher();
-  });
-});
-
-async function charger() {
-  const reponse = await fetch("data/stock.json");
-  produits = await reponse.json();
-  remplirCategories();
-  afficher();
-}
-
-charger();
-```
-</solution>

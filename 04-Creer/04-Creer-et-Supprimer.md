@@ -77,24 +77,6 @@ if (!items[0].classList.contains("article")) return "Le nouveau li doit avoir la
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Créer et remplir** le `li` comme au challenge 1.
-2.  **Placer au début** : `prepend` au lieu de `append`.
-
-**Code :**
-```javascript
-const liste = document.querySelector("#liste");
-
-const li = document.createElement("li");
-li.textContent = "Café";
-li.classList.add("article");
-
-liste.prepend(li);
-```
-</solution>
-
 ### Challenge 3 : Ajouter depuis un tableau
 
 Ajoute à la fin de la liste tous les articles du tableau `aAjouter`, avec une boucle.
@@ -113,26 +95,6 @@ if ($$("#liste li").some(li => !li.classList.contains("article"))) return "Chaqu
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Boucle** : `forEach` sur le tableau `aAjouter`.
-2.  **Dans la boucle** : créer, remplir et ajouter un `li` pour chaque texte.
-
-**Code :**
-```javascript
-const aAjouter = ["Riz", "Tomates", "Huile"];
-const liste = document.querySelector("#liste");
-
-aAjouter.forEach(texte => {
-  const li = document.createElement("li");
-  li.textContent = texte;
-  li.classList.add("article");
-  liste.append(li);
-});
-```
-</solution>
-
 ### Challenge 4 : Supprimer le lait
 
 Retire « Lait » de la liste.
@@ -143,24 +105,6 @@ if (textes.includes("Lait")) return "« Lait » est toujours dans la liste : sé
 if (textes.join(",") !== "Pain,Œufs") return "Seul « Lait » doit être retiré.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Sélection** : « Lait » est le deuxième `li` (index `1`), ou `li:nth-child(2)`.
-2.  **Suppression** : `remove()`.
-
-**Code :**
-```javascript
-const articles = document.querySelectorAll("#liste li");
-articles[1].remove();
-
-// Plus robuste : chercher par texte
-// articles.forEach(li => {
-//   if (li.textContent === "Lait") li.remove();
-// });
-```
-</solution>
 
 ### Challenge 5 : Cloner une carte
 
@@ -175,21 +119,3 @@ if (text(cartes[1].querySelector(".prix")) !== "1 DH") return "Le prix de la cop
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Cloner** : `cloneNode(true)` copie la carte avec son `h3` et son prix.
-2.  **Modifier la copie** : on cherche dans la copie avec `copie.querySelector(...)`.
-3.  **Placer** : `append` dans `#cartes`.
-
-**Code :**
-```javascript
-const carte = document.querySelector(".carte-produit");
-const copie = carte.cloneNode(true);
-
-copie.querySelector("h3").textContent = "Banane";
-copie.querySelector(".prix").textContent = "1 DH";
-
-document.querySelector("#cartes").append(copie);
-```
-</solution>

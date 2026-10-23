@@ -77,29 +77,6 @@ if ($("body").classList.contains("sombre")) return "Après être repassé en cla
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Au chargement** : si `getItem("mode")` vaut `"sombre"`, ajouter la classe.
-2.  **Au clic** : `toggle` la classe, puis enregistrer l'état actuel.
-3.  **État actuel** : `classList.contains("sombre")`.
-
-**Code :**
-```javascript
-const body = document.body;
-
-if (localStorage.getItem("mode") === "sombre") {
-  body.classList.add("sombre");
-}
-
-document.querySelector("#mode").addEventListener("click", () => {
-  body.classList.toggle("sombre");
-  const mode = body.classList.contains("sombre") ? "sombre" : "clair";
-  localStorage.setItem("mode", mode);
-});
-```
-</solution>
-
 ### Challenge 3 : Enregistrer les notes
 
 Quand on envoie le formulaire `#form-note`, la note saisie est ajoutée dans `#notes` (un `li`) **et** dans un tableau enregistré en JSON sous la clé `notes`. Le champ est vidé après l'ajout. Une note vide n'est pas ajoutée.
@@ -117,40 +94,6 @@ await submit("#form-note");
 if ($$("#notes li").length !== 1) return "Une note vide ne doit pas être ajoutée.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Un tableau** `notes` en mémoire.
-2.  **Au submit** : `preventDefault`, lire et nettoyer la saisie, ignorer si vide.
-3.  **Ajouter** au tableau, **enregistrer** avec `JSON.stringify`, **afficher** un `li`.
-4.  **Vider** le champ.
-
-**Code :**
-```javascript
-const form = document.querySelector("#form-note");
-const champ = document.querySelector("#note");
-const liste = document.querySelector("#notes");
-const notes = [];
-
-function ajouterLi(texte) {
-  const li = document.createElement("li");
-  li.textContent = texte;
-  liste.append(li);
-}
-
-form.addEventListener("submit", event => {
-  event.preventDefault();
-  const texte = champ.value.trim();
-  if (texte === "") return;
-
-  notes.push(texte);
-  localStorage.setItem("notes", JSON.stringify(notes));
-  ajouterLi(texte);
-  champ.value = "";
-});
-```
-</solution>
 
 ### Challenge 4 : Retrouver les notes
 
@@ -172,41 +115,6 @@ if (textes.length !== 3) return "Une note ajoutée après un rechargement doit s
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Initialiser** le tableau avec ce qui est enregistré : `JSON.parse(getItem("notes")) || []`.
-2.  **Afficher** chaque note du tableau au chargement.
-3.  **Le reste** ne change pas : on ajoute au tableau, qui contient déjà les anciennes notes.
-
-**Code :**
-```javascript
-const form = document.querySelector("#form-note");
-const champ = document.querySelector("#note");
-const liste = document.querySelector("#notes");
-const notes = JSON.parse(localStorage.getItem("notes")) || [];
-
-function ajouterLi(texte) {
-  const li = document.createElement("li");
-  li.textContent = texte;
-  liste.append(li);
-}
-
-notes.forEach(ajouterLi);
-
-form.addEventListener("submit", event => {
-  event.preventDefault();
-  const texte = champ.value.trim();
-  if (texte === "") return;
-
-  notes.push(texte);
-  localStorage.setItem("notes", JSON.stringify(notes));
-  ajouterLi(texte);
-  champ.value = "";
-});
-```
-</solution>
-
 ### Challenge 5 : Tout effacer
 
 Reprends le challenge 4. Le bouton `#vider` supprime toutes les notes : de la page **et** du localStorage.
@@ -226,43 +134,3 @@ if ($$("#notes li").length !== 1) return "Après #vider, on doit pouvoir ajouter
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Vider le tableau** : `notes.length = 0` (le tableau est en `const`, on ne peut pas le réaffecter).
-2.  **Supprimer la clé** avec `removeItem`.
-3.  **Vider la liste** : `innerHTML = ""`.
-
-**Code :**
-```javascript
-const form = document.querySelector("#form-note");
-const champ = document.querySelector("#note");
-const liste = document.querySelector("#notes");
-const notes = JSON.parse(localStorage.getItem("notes")) || [];
-
-function ajouterLi(texte) {
-  const li = document.createElement("li");
-  li.textContent = texte;
-  liste.append(li);
-}
-
-notes.forEach(ajouterLi);
-
-form.addEventListener("submit", event => {
-  event.preventDefault();
-  const texte = champ.value.trim();
-  if (texte === "") return;
-
-  notes.push(texte);
-  localStorage.setItem("notes", JSON.stringify(notes));
-  ajouterLi(texte);
-  champ.value = "";
-});
-
-document.querySelector("#vider").addEventListener("click", () => {
-  notes.length = 0;
-  localStorage.removeItem("notes");
-  liste.innerHTML = "";
-});
-```
-</solution>

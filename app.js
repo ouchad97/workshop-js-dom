@@ -315,7 +315,7 @@ function activate(index, scroll = true) {
   resultBox.hidden = true;
   updateCards();
   run();
-  if (scroll && window.matchMedia("(max-width: 1200px)").matches) sandbox.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (scroll && window.matchMedia("(max-width: 1300px)").matches) sandbox.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function saveCode() {
@@ -530,7 +530,7 @@ resultBox.addEventListener("click", event => {
   if (event.target.matches("[data-next]")) {
     activate(current.active + 1);
     const card = readerBody.querySelector(`.challenge[data-index="${current.active}"]`);
-    if (card && !window.matchMedia("(max-width: 1200px)").matches) card.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (card && !window.matchMedia("(max-width: 1300px)").matches) card.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 });
 
@@ -579,7 +579,6 @@ nav.addEventListener("click", event => {
 });
 
 document.querySelector("#start-button").addEventListener("click", () => openLesson("01"));
-document.querySelector("#close-reader").addEventListener("click", () => { saveCode(); showHome(); });
 
 document.querySelector(".brand").addEventListener("click", event => {
   event.preventDefault();
@@ -589,6 +588,14 @@ document.querySelector(".brand").addEventListener("click", event => {
 
 document.querySelector("#menu-toggle").addEventListener("click", () => {
   document.querySelector("#sidebar").classList.toggle("open");
+});
+
+// Close the menu when clicking outside it or pressing Escape
+document.addEventListener("click", event => {
+  if (!event.target.closest("#sidebar, #menu-toggle")) document.querySelector("#sidebar").classList.remove("open");
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") document.querySelector("#sidebar").classList.remove("open");
 });
 
 window.addEventListener("popstate", event => {

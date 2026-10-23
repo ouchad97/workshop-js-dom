@@ -103,41 +103,6 @@ if (enRupture.sort().join(",") !== "Micro USB,Souris sans fil") return "Seules �
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Dans la boucle** d'affichage, une condition sur `produit.stock`.
-2.  **Classe** : `classList.add("rupture")`.
-
-**Code :**
-```javascript
-const grille = document.querySelector("#grille");
-
-function afficher(liste) {
-  grille.innerHTML = "";
-  liste.forEach(produit => {
-    const carte = document.createElement("div");
-    carte.classList.add("carte");
-    if (produit.stock === 0) {
-      carte.classList.add("rupture");
-    }
-
-    const titre = document.createElement("h3");
-    titre.textContent = produit.nom;
-
-    const prix = document.createElement("p");
-    prix.classList.add("prix");
-    prix.textContent = `${produit.prix} DH`;
-
-    carte.append(titre, prix);
-    grille.append(carte);
-  });
-}
-
-afficher(produits);
-```
-</solution>
-
 ### Challenge 3 : Filtrer par catégorie
 
 Quand on choisit une catégorie dans `#categorie`, seules les cartes de cette catégorie sont affichées. L'option `tous` réaffiche tout.
@@ -150,43 +115,6 @@ await choose("#categorie", "tous");
 if ($$("#grille .carte").length !== 8) return "Avec « tous », les 8 produits doivent revenir.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Écouter** l'événement `change` du select.
-2.  **Filtrer** avec `filter` selon `select.value`.
-3.  **Réafficher** avec `afficher(resultat)`.
-
-**Code :**
-```javascript
-const grille = document.querySelector("#grille");
-const selectCategorie = document.querySelector("#categorie");
-
-function afficher(liste) {
-  grille.innerHTML = "";
-  liste.forEach(produit => {
-    const carte = document.createElement("div");
-    carte.classList.add("carte");
-    if (produit.stock === 0) carte.classList.add("rupture");
-    carte.innerHTML = `<h3></h3><p class="prix">${produit.prix} DH</p>`;
-    carte.querySelector("h3").textContent = produit.nom;
-    grille.append(carte);
-  });
-}
-
-selectCategorie.addEventListener("change", () => {
-  const categorie = selectCategorie.value;
-  if (categorie === "tous") {
-    afficher(produits);
-  } else {
-    afficher(produits.filter(p => p.categorie === categorie));
-  }
-});
-
-afficher(produits);
-```
-</solution>
 
 ### Challenge 4 : Rechercher
 
@@ -204,39 +132,6 @@ if ($$("#grille .carte").length !== 8) return "Quand la recherche est vide, les 
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Écouter** `input` sur le champ.
-2.  **Comparer en minuscules** : `toLowerCase()` sur le nom et sur la saisie.
-3.  **Filtrer** avec `includes`, puis `afficher`.
-
-**Code :**
-```javascript
-const grille = document.querySelector("#grille");
-const recherche = document.querySelector("#recherche");
-
-function afficher(liste) {
-  grille.innerHTML = "";
-  liste.forEach(produit => {
-    const carte = document.createElement("div");
-    carte.classList.add("carte");
-    if (produit.stock === 0) carte.classList.add("rupture");
-    carte.innerHTML = `<h3></h3><p class="prix">${produit.prix} DH</p>`;
-    carte.querySelector("h3").textContent = produit.nom;
-    grille.append(carte);
-  });
-}
-
-recherche.addEventListener("input", () => {
-  const texte = recherche.value.toLowerCase();
-  afficher(produits.filter(p => p.nom.toLowerCase().includes(texte)));
-});
-
-afficher(produits);
-```
-</solution>
-
 ### Challenge 5 : Trier par prix
 
 Le bouton `#trier` affiche les produits du **moins cher au plus cher**.
@@ -248,38 +143,6 @@ if (prix.length !== 8) return "Après le tri, les 8 produits doivent être affic
 if (prix.some((p, i) => i > 0 && p < prix[i - 1])) return `Les prix ne sont pas dans l'ordre croissant : ${prix.join(", ")}.`;
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Copier** le tableau avec `[...produits]` pour ne pas l'abîmer.
-2.  **Trier** avec `sort((a, b) => a.prix - b.prix)`.
-3.  **Réafficher**.
-
-**Code :**
-```javascript
-const grille = document.querySelector("#grille");
-
-function afficher(liste) {
-  grille.innerHTML = "";
-  liste.forEach(produit => {
-    const carte = document.createElement("div");
-    carte.classList.add("carte");
-    if (produit.stock === 0) carte.classList.add("rupture");
-    carte.innerHTML = `<h3></h3><p class="prix">${produit.prix} DH</p>`;
-    carte.querySelector("h3").textContent = produit.nom;
-    grille.append(carte);
-  });
-}
-
-document.querySelector("#trier").addEventListener("click", () => {
-  const tries = [...produits].sort((a, b) => a.prix - b.prix);
-  afficher(tries);
-});
-
-afficher(produits);
-```
-</solution>
 
 ### Challenge 6 : Les statistiques
 
@@ -293,41 +156,3 @@ if (!chiffres().includes("3") || !chiffres().includes("310")) return `Avec la ca
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Somme** des prix avec `reduce`.
-2.  **Moyenne** : somme ÷ nombre, arrondie avec `Math.round`.
-3.  **Mise à jour** : on calcule les stats **dans** `afficher`, comme ça elles suivent toujours la liste affichée.
-4.  **Liste vide** : on évite la division par zéro.
-
-**Code :**
-```javascript
-const grille = document.querySelector("#grille");
-const stats = document.querySelector("#stats");
-const selectCategorie = document.querySelector("#categorie");
-
-function afficher(liste) {
-  grille.innerHTML = "";
-  liste.forEach(produit => {
-    const carte = document.createElement("div");
-    carte.classList.add("carte");
-    if (produit.stock === 0) carte.classList.add("rupture");
-    carte.innerHTML = `<h3></h3><p class="prix">${produit.prix} DH</p>`;
-    carte.querySelector("h3").textContent = produit.nom;
-    grille.append(carte);
-  });
-
-  const total = liste.reduce((somme, p) => somme + p.prix, 0);
-  const moyenne = liste.length ? Math.round(total / liste.length) : 0;
-  stats.textContent = `${liste.length} produits · prix moyen : ${moyenne} DH`;
-}
-
-selectCategorie.addEventListener("change", () => {
-  const categorie = selectCategorie.value;
-  afficher(categorie === "tous" ? produits : produits.filter(p => p.categorie === categorie));
-});
-
-afficher(produits);
-```
-</solution>

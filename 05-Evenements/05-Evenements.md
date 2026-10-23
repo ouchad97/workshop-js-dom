@@ -112,33 +112,6 @@ if (Math.sign(pos()) !== sens) return "Un deuxième clic doit remettre l'escalie
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Créer le bouton** `btn-inverser`.
-2.  **Inverser** : l'escalier est un conteneur flex. `flex-direction: row-reverse` affiche les marches dans l'ordre inverse.
-3.  **Aller-retour** : on vérifie la direction actuelle pour choisir la suivante.
-
-**Code :**
-```javascript
-const controls = document.querySelector("#controls");
-const escalier = document.querySelector("#staircase");
-
-const btnInverser = document.createElement("button");
-btnInverser.id = "btn-inverser";
-btnInverser.textContent = "Inverser";
-controls.append(btnInverser);
-
-btnInverser.addEventListener("click", () => {
-  if (escalier.style.flexDirection === "row-reverse") {
-    escalier.style.flexDirection = "row";
-  } else {
-    escalier.style.flexDirection = "row-reverse";
-  }
-});
-```
-</solution>
-
 ### Challenge 3 : Ajouter une marche
 
 Crée un bouton `btn-plus` (texte « + ») qui ajoute une nouvelle marche à la fin de l'escalier à **chaque** clic. La nouvelle marche a la classe `step` et affiche son numéro.
@@ -152,35 +125,6 @@ if (steps.length !== 7) return `Après 2 clics, l'escalier doit avoir 7 marches 
 if (text(steps[5]) !== "6" || text(steps[6]) !== "7") return "Les nouvelles marches doivent afficher leur numéro (6 puis 7).";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Créer le bouton** `btn-plus`.
-2.  **À chaque clic** : créer une `div`, lui donner la classe `step`.
-3.  **Numéro** : le nombre de marches actuel + 1. On recompte à chaque clic avec `querySelectorAll`.
-4.  **Placer** : `append` dans `#staircase`.
-
-**Code :**
-```javascript
-const controls = document.querySelector("#controls");
-const escalier = document.querySelector("#staircase");
-
-const btnPlus = document.createElement("button");
-btnPlus.id = "btn-plus";
-btnPlus.textContent = "+";
-controls.append(btnPlus);
-
-btnPlus.addEventListener("click", () => {
-  const numero = escalier.querySelectorAll(".step").length + 1;
-  const marche = document.createElement("div");
-  marche.classList.add("step");
-  marche.id = "step" + numero;
-  marche.textContent = numero;
-  escalier.append(marche);
-});
-```
-</solution>
 
 ### Challenge 4 : Retirer une marche
 
@@ -200,32 +144,6 @@ await click("#btn-moins");
 if (errors().length) return "Ton code plante quand il n'y a plus de marche : vérifie que la marche existe avant de la supprimer.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Créer le bouton** `btn-moins`.
-2.  **À chaque clic** : récupérer la dernière marche avec `lastElementChild`.
-3.  **Sécurité** : s'il n'y a plus de marche, `lastElementChild` vaut `null` : on ne fait rien.
-
-**Code :**
-```javascript
-const controls = document.querySelector("#controls");
-const escalier = document.querySelector("#staircase");
-
-const btnMoins = document.createElement("button");
-btnMoins.id = "btn-moins";
-btnMoins.textContent = "−";
-controls.append(btnMoins);
-
-btnMoins.addEventListener("click", () => {
-  const derniere = escalier.lastElementChild;
-  if (derniere) {
-    derniere.remove();
-  }
-});
-```
-</solution>
 
 ### Challenge 5 : Chercher une marche
 
@@ -247,39 +165,3 @@ if (errors().length) return "Avec un numéro qui n'existe pas (42), ton code pla
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Créer** un `input` (id `numero`) et un bouton (id `btn-valider`).
-2.  **Au clic** : lire `input.value` (c'est une chaîne).
-3.  **Trouver la marche** : les marches sont numérotées de 1 à N, donc l'index est `numero - 1`.
-4.  **Vérifier** : si la marche n'existe pas, afficher un message au lieu de planter.
-
-**Code :**
-```javascript
-const controls = document.querySelector("#controls");
-
-const champ = document.createElement("input");
-champ.id = "numero";
-champ.type = "number";
-champ.placeholder = "N° de marche";
-
-const btnValider = document.createElement("button");
-btnValider.id = "btn-valider";
-btnValider.textContent = "Valider";
-
-controls.append(champ, btnValider);
-
-btnValider.addEventListener("click", () => {
-  const numero = Number(champ.value);
-  const marches = document.querySelectorAll(".step");
-  const marche = marches[numero - 1];
-
-  if (marche) {
-    marche.style.backgroundColor = "#ef8354";
-  } else {
-    console.log("La marche " + numero + " n'existe pas");
-  }
-});
-```
-</solution>

@@ -83,25 +83,6 @@ if (premiere.classList.contains("fait")) return "Un deuxième clic doit retirer 
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Un écouteur** sur la `ul` `#taches`.
-2.  **Retrouver la tâche** : `event.target.closest(".tache")` marche que l'on clique sur le `span` ou sur le `li`.
-3.  **Basculer** la classe avec `classList.toggle("fait")`.
-
-**Code :**
-```javascript
-const liste = document.querySelector("#taches");
-
-liste.addEventListener("click", event => {
-  const tache = event.target.closest(".tache");
-  if (!tache) return;
-  tache.classList.toggle("fait");
-});
-```
-</solution>
-
 ### Challenge 3 : Supprimer une tâche
 
 Toujours avec un seul écouteur sur `#taches` : un clic sur un bouton `.supprimer` retire **sa** tâche de la liste.
@@ -113,25 +94,6 @@ if (textes.length !== 2) return `Après un clic sur le 2e bouton ✕, il doit re
 if (textes.includes("Faire les challenges")) return "C'est la tâche du bouton cliqué (« Faire les challenges ») qui doit disparaître.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Un écouteur** sur `#taches`.
-2.  **Tester la cible** : `event.target.matches(".supprimer")`.
-3.  **Remonter au li** avec `closest(".tache")` puis `remove()`.
-
-**Code :**
-```javascript
-const liste = document.querySelector("#taches");
-
-liste.addEventListener("click", event => {
-  if (event.target.matches(".supprimer")) {
-    event.target.closest(".tache").remove();
-  }
-});
-```
-</solution>
 
 ### Challenge 4 : Ajouter des tâches
 
@@ -148,41 +110,6 @@ if ($$("#taches .tache").length !== 3) return "Le bouton ✕ de la nouvelle tâc
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Garder** l'écouteur délégué du challenge 3.
-2.  **Créer** un `li.tache` qui contient un `span.texte` et un `button.supprimer`.
-3.  **Rien d'autre** : le clic sur le nouveau ✕ remonte jusqu'à `#taches`, déjà écouté.
-
-**Code :**
-```javascript
-const liste = document.querySelector("#taches");
-
-liste.addEventListener("click", event => {
-  if (event.target.matches(".supprimer")) {
-    event.target.closest(".tache").remove();
-  }
-});
-
-document.querySelector("#ajouter").addEventListener("click", () => {
-  const li = document.createElement("li");
-  li.classList.add("tache");
-
-  const texte = document.createElement("span");
-  texte.classList.add("texte");
-  texte.textContent = "Nouvelle tâche";
-
-  const bouton = document.createElement("button");
-  bouton.classList.add("supprimer");
-  bouton.textContent = "✕";
-
-  li.append(texte, bouton);
-  liste.append(li);
-});
-```
-</solution>
-
 ### Challenge 5 : Tâches restantes
 
 `#restantes` affiche le nombre de tâches **non faites**, par exemple `3 tâche(s) restante(s)`. Le texte est correct au chargement et se met à jour quand on coche ou supprime une tâche. Combine les challenges 2 et 3.
@@ -197,34 +124,3 @@ if (nombre() !== "1") return "Après avoir supprimé une tâche non faite, #rest
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Une fonction** `majCompteur()` qui compte les `.tache` sans la classe `fait`.
-2.  **Sélecteur** : `.tache:not(.fait)`.
-3.  **Appels** : au chargement, puis à la fin de l'écouteur de clic.
-4.  **Attention à l'ordre** : on teste d'abord le bouton supprimer, sinon le clic sur ✕ coche aussi la tâche.
-
-**Code :**
-```javascript
-const liste = document.querySelector("#taches");
-const restantes = document.querySelector("#restantes");
-
-function majCompteur() {
-  const nombre = liste.querySelectorAll(".tache:not(.fait)").length;
-  restantes.textContent = `${nombre} tâche(s) restante(s)`;
-}
-
-liste.addEventListener("click", event => {
-  if (event.target.matches(".supprimer")) {
-    event.target.closest(".tache").remove();
-  } else {
-    const tache = event.target.closest(".tache");
-    if (tache) tache.classList.toggle("fait");
-  }
-  majCompteur();
-});
-
-majCompteur();
-```
-</solution>

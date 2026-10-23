@@ -89,26 +89,6 @@ if (!text("#resultat").includes("Bonjour Sara")) return `Après l'envoi avec le 
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Écouter** `submit` sur le formulaire.
-2.  **Bloquer** le rechargement avec `event.preventDefault()`.
-3.  **Lire** `#nom` et **afficher** dans `#resultat`.
-
-**Code :**
-```javascript
-const form = document.querySelector("#inscription");
-const champNom = document.querySelector("#nom");
-const resultat = document.querySelector("#resultat");
-
-form.addEventListener("submit", event => {
-  event.preventDefault();
-  resultat.textContent = `Bonjour ${champNom.value} !`;
-});
-```
-</solution>
-
 ### Challenge 3 : Nom obligatoire
 
 Reprends le challenge 2 (bouton « Reprendre le précédent »). Si le nom est vide (ou ne contient que des espaces), affiche `Le nom est obligatoire` dans `#erreur` et **pas** de message de bienvenue. Quand le nom est correct, l'erreur disparaît.
@@ -124,36 +104,6 @@ if (text("#erreur")) return "Quand le nom est correct, l'erreur doit disparaîtr
 if (!text("#resultat").includes("Bonjour Sara")) return "Quand le nom est correct, #resultat doit afficher « Bonjour Sara ! ».";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Nettoyer** la saisie avec `trim()`.
-2.  **Condition** : si la chaîne est vide, afficher l'erreur, vider le résultat et sortir avec `return`.
-3.  **Sinon** : effacer l'erreur et afficher le message.
-
-**Code :**
-```javascript
-const form = document.querySelector("#inscription");
-const champNom = document.querySelector("#nom");
-const erreur = document.querySelector("#erreur");
-const resultat = document.querySelector("#resultat");
-
-form.addEventListener("submit", event => {
-  event.preventDefault();
-  const nom = champNom.value.trim();
-
-  if (nom === "") {
-    erreur.textContent = "Le nom est obligatoire";
-    resultat.textContent = "";
-    return;
-  }
-
-  erreur.textContent = "";
-  resultat.textContent = `Bonjour ${nom} !`;
-});
-```
-</solution>
 
 ### Challenge 4 : Email valide
 
@@ -175,42 +125,6 @@ if (!text("#erreur")) return "La règle du nom obligatoire doit toujours fonctio
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Lire** l'email avec `trim()`.
-2.  **Tester** avec `includes("@")` et `includes(".")`.
-3.  **Ordre des règles** : on vérifie le nom, puis l'email. Chaque erreur fait un `return`.
-
-**Code :**
-```javascript
-const form = document.querySelector("#inscription");
-const champNom = document.querySelector("#nom");
-const champEmail = document.querySelector("#email");
-const erreur = document.querySelector("#erreur");
-const resultat = document.querySelector("#resultat");
-
-form.addEventListener("submit", event => {
-  event.preventDefault();
-  const nom = champNom.value.trim();
-  const email = champEmail.value.trim();
-  resultat.textContent = "";
-
-  if (nom === "") {
-    erreur.textContent = "Le nom est obligatoire";
-    return;
-  }
-  if (!email.includes("@") || !email.includes(".")) {
-    erreur.textContent = "Email invalide";
-    return;
-  }
-
-  erreur.textContent = "";
-  resultat.textContent = `Bonjour ${nom} !`;
-});
-```
-</solution>
-
 ### Challenge 5 : Accepter le règlement
 
 Le bouton `#envoyer` est **désactivé** tant que la case `#cgu` n'est pas cochée. Il s'active quand on coche, et se désactive à nouveau si on décoche.
@@ -224,22 +138,3 @@ if (!$("#envoyer").disabled) return "Quand on décoche #cgu, le bouton doit se d
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Au chargement** : `bouton.disabled = true`.
-2.  **Écouter** l'événement `change` de la case.
-3.  **Synchroniser** : le bouton est désactivé quand la case n'est **pas** cochée, donc `disabled = !checked`.
-
-**Code :**
-```javascript
-const cgu = document.querySelector("#cgu");
-const bouton = document.querySelector("#envoyer");
-
-bouton.disabled = true;
-
-cgu.addEventListener("change", () => {
-  bouton.disabled = !cgu.checked;
-});
-```
-</solution>

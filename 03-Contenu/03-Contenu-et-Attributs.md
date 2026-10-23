@@ -72,19 +72,6 @@ if (text("#bio").includes("Bio à compléter")) return "Remplace tout le texte d
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Sélection** : `#bio`.
-2.  **HTML** : `innerHTML` interprète la balise `<strong>`, contrairement à `textContent`.
-
-**Code :**
-```javascript
-const bio = document.querySelector("#bio");
-bio.innerHTML = "Passionnée par le <strong>JavaScript</strong> et le design.";
-```
-</solution>
-
 ### Challenge 3 : Changer la photo
 
 Change l'image de profil : sa source doit devenir `img/avatar-2.svg` et son texte alternatif `Ma photo`.
@@ -96,20 +83,6 @@ if (img.getAttribute("alt") !== "Ma photo") return "L'attribut alt doit être ex
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Sélection** : `#avatar`.
-2.  **Attributs** : `setAttribute(nom, valeur)` ou les propriétés `src` et `alt`.
-
-**Code :**
-```javascript
-const avatar = document.querySelector("#avatar");
-avatar.setAttribute("src", "img/avatar-2.svg");
-avatar.setAttribute("alt", "Ma photo");
-```
-</solution>
-
 ### Challenge 4 : Le lien du portfolio
 
 Le lien « Mon portfolio » doit pointer vers `https://github.com` et s'ouvrir dans un **nouvel onglet**.
@@ -120,21 +93,6 @@ if (!(lien.getAttribute("href") || "").startsWith("https://github.com")) return 
 if (lien.getAttribute("target") !== "_blank") return "Pour ouvrir dans un nouvel onglet, l'attribut target doit valoir _blank.";
 return true;
 -->
-
-<solution>
-### Étapes de résolution
-
-1.  **Sélection** : `#site`.
-2.  **Lien** : l'attribut `href`.
-3.  **Nouvel onglet** : l'attribut `target="_blank"`.
-
-**Code :**
-```javascript
-const lien = document.querySelector("#site");
-lien.href = "https://github.com";
-lien.target = "_blank";
-```
-</solution>
 
 ### Challenge 5 : En ligne
 
@@ -149,19 +107,3 @@ if (text(statut) !== "En ligne") return "Le texte du badge doit être « En lign
 return true;
 -->
 
-<solution>
-### Étapes de résolution
-
-1.  **Lecture** : `dataset.statut` lit l'attribut `data-statut`.
-2.  **Écriture** : on affecte une nouvelle valeur à `dataset.statut`.
-3.  **Texte** : `textContent`.
-
-**Code :**
-```javascript
-const statut = document.querySelector("#statut");
-console.log(statut.dataset.statut);
-
-statut.dataset.statut = "en-ligne";
-statut.textContent = "En ligne";
-```
-</solution>
