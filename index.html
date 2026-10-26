@@ -11,33 +11,49 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
   <script>
     // Always the latest version, without clearing the cache:
-    // styles.css and app.js are loaded with their current ETag in the URL,
-    // and a page shown from an old browser cache reloads itself once.
+    // styles.css and app.js are fetched with cache "no-cache" (the browser checks the server every time)
+    // and inserted inline, and a page shown from an old browser cache reloads itself once.
+    // The version is a hash of the files' content: GitHub's ETags change with compression, so they are not used.
     (function () {
       const page = location.pathname;
-      const tag = url => fetch(url, { method: "HEAD", cache: "no-cache" })
-        .then(response => (response.headers.get("etag") || response.headers.get("last-modified") || "").replace(/\W/g, ""))
-        .catch(() => "");
-      window.assetVersion = () => Promise.all(["styles.css", "app.js", page].map(tag)).then(tags => tags.join("-"));
+      const get = url => fetch(url, { cache: "no-cache" }).then(response => response.ok ? response.text() : Promise.reject(new Error(url)));
+      const hash = text => { let h = 0; for (let i = 0; i < text.length; i++) h = (h * 31 + text.charCodeAt(i)) | 0; return h; };
+      window.assetVersion = () => Promise.all(["styles.css", "app.js", page].map(get))
+        .then(texts => texts.map(hash).join("-"))
+        .catch(() => null);
 
       const root = document.documentElement;
       const show = () => { root.style.visibility = ""; };
       root.style.visibility = "hidden";
       setTimeout(show, 3000);
 
-      Promise.all([tag("styles.css"), tag("app.js")]).then(([css, js]) => {
+      const start = run => {
+        if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+        else run();
+      };
+
+      Promise.all([get("styles.css"), get("app.js")]).then(([css, js]) => {
+        const style = document.createElement("style");
+        style.textContent = css;
+        document.head.append(style);
+        show();
+        start(() => {
+          const script = document.createElement("script");
+          script.textContent = js;
+          document.body.append(script);
+        });
+      }).catch(() => {
+        // Network trouble: fall back to the normal files
         const link = document.createElement("link");
         link.rel = "stylesheet";
-        link.href = "styles.css?v=" + css;
+        link.href = "styles.css";
         link.onload = link.onerror = show;
         document.head.append(link);
-        const start = () => {
+        start(() => {
           const script = document.createElement("script");
-          script.src = "app.js?v=" + js;
+          script.src = "app.js";
           document.body.append(script);
-        };
-        if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
-        else start();
+        });
       });
 
       fetch(page, { cache: "force-cache" }).then(response => response.text())

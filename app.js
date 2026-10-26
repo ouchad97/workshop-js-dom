@@ -948,8 +948,16 @@ document.querySelector("#work-copy").addEventListener("click", async () => {
 /* ── New version: tabs left open check every 5 minutes and offer to reload ── */
 if (window.assetVersion) {
   const loadedVersion = window.assetVersion();
+  let seen = null;
   setInterval(async () => {
-    if (document.querySelector(".update-banner") || await window.assetVersion() === await loadedVersion) return;
+    if (document.querySelector(".update-banner")) return;
+    const loaded = await loadedVersion;
+    const latest = await window.assetVersion();
+    // Shown only when the same new version is found twice in a row (no false alarm on a network glitch)
+    const isNew = Boolean(loaded && latest && latest !== loaded);
+    const confirmed = isNew && latest === seen;
+    seen = isNew ? latest : null;
+    if (!confirmed) return;
     const banner = document.createElement("div");
     banner.className = "update-banner";
     banner.innerHTML = '<span>Une nouvelle version du workshop est disponible. Ton code est sauvegardé.</span><button type="button">Recharger</button>';
