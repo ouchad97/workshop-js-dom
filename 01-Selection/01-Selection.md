@@ -144,7 +144,8 @@ Dans ta boucle, construis le texte avec un template literal : `${titre} : ${genr
 
 <!-- check
 const attendus = ["Le Petit Prince : roman", "Astérix le Gaulois : bd", "L'Étranger : roman", "Une brève histoire du temps : science"];
-const manque = attendus.find(t => !logs().some(line => line.trim() === t));
+const sansEspaces = t => t.replace(/\s*:\s*/g, ":");
+const manque = attendus.find(t => !logs().some(line => sansEspaces(line) === sansEspaces(t)));
 if (manque) return `Il manque « ${manque} » dans la console.`;
 if (!/forEach|for\s*\(|while\s*\(/.test(code())) return "Utilise une boucle (forEach, for…) au lieu de répéter le code.";
 return true;

@@ -601,8 +601,9 @@ const checkHelpers = {
   $$: selector => Array.from(frame.contentDocument.querySelectorAll(selector)),
   css: (target, property) => frame.contentWindow.getComputedStyle(need(target))[property],
   text: target => { const element = typeof target === "string" ? frame.contentDocument.querySelector(target) : target; return element ? element.textContent.trim() : ""; },
-  logs: () => frame.contentWindow.__logs || [],
-  logged: value => (frame.contentWindow.__logs || []).some(line => line.includes(value)),
+  // Spaces are not checked: console.log("a", "b") adds its own space between values
+  logs: () => (frame.contentWindow.__logs || []).map(line => line.replace(/\s+/g, " ").trim()),
+  logged: value => checkHelpers.logs().some(line => line.includes(value.replace(/\s+/g, " ").trim())),
   errors: () => frame.contentWindow.__errors || [],
   code: () => getCode().replace(/\/\/.*$|\/\*[\s\S]*?\*\//gm, ""),
   fetches: () => frame.contentWindow.__fetchCount || 0,
